@@ -1,5 +1,17 @@
-# Vue 3 + Vite
+# 프로젝트: Lyppter
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 주제: 사용자가 노래의 가사를 입력하면 그에 맞춰서 가사 ppt를 제작해주는 사이트
+### 개발환경
+- vue3
+- vite
+- vanilla js
+- intellij
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+### 개발 목표
+1. 사용자가 입력한 텍스트에 맞춰 ppt미리보기 기능을 제공
+2. 텍스트의 크기, 폰트, 색, 텍스트 박스 위치, 텍스트 박스 크기 설정 가능
+3. 배경의 색, 배경이미지 선택 가능
+4. 텍스트 박스의 크기, 위치를 직접 마우스를 통해 조절 가능
+5. 가사를 입력하면 미리보기에 즉시 반영
+6. 기본적으로 엔터를 기준으로 새로운 슬라이드를 생성
+7. 백엔드와 통신으로 가사와 설정값들을 전송하여 최종적으로 가사 ppt 생성

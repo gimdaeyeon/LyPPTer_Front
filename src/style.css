@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root{
+    --main-color: #009960;
+    --sub-color:#B88746;
+    --black: #1C160C;
+    --gray: #71717A;
+    --border-color:rgb(233 223 206);
+}
+
+body{
+    font-family: "Plus Jakarta Sans", "Noto Sans","Noto Sans KR", serif;
+}
+
+
+
+
+
+
+
+

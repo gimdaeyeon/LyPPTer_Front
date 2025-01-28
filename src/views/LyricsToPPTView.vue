@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-    <router-view/>
-  </div>
+  <div>Create PPT</div>
 </template>
 
 <script setup>
