@@ -8,6 +8,7 @@ const router = createRouter({
             component: () => import('@/views/LyricsToPPTView.vue'),
         },
     ]
+
 });
 
 // router.beforeEach((to, from, next) => {
