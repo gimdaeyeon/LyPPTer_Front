@@ -1,9 +1,10 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 :root{
-    --main-color: #009960;
+    --main-color: #00AB6B;
+    --main-hover-color: #009960;
     --sub-color:#B88746;
-    --gray: #71717A;
     --border-color:rgb(233 223 206);
 }
 

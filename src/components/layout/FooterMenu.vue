@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-content-container flex flex-col border-t border-t-[#F4EFE6]">
+  <div class="layout-content-container flex flex-col border-t border-t-gray-200">
     <footer class="flex space gap-6 p-5 text-center @container">
       <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
         <a class="text-sm font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
