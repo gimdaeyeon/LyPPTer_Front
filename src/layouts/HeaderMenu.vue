@@ -12,7 +12,7 @@
       </div>
       <div class="flex gap-2">
         <button
-            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-[#00AB6B] hover:bg-[#009960] text-[#FFFFFF] text-sm font-bold leading-normal tracking-[0.015em]"
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-primary hover:bg-[#009960] text-white text-sm font-bold leading-normal tracking-[0.015em]"
         >
           <span class="truncate">Export</span>
         </button>
