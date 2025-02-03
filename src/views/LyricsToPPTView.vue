@@ -1,71 +1,53 @@
 <template>
   <div class="gap-1 px-6 flex flex-1 justify-center py-5">
-    <div class="layout-content-container flex flex-col max-w-[920px] flex-1">
-      <div class="pb-3">
-        <div class="flex border-b border-gray-200 px-4 gap-8">
-          <a class="flex flex-col items-center justify-center border-b-[3px] border-b-[#00AB6B] text-[#1C160C] pb-[13px] pt-4" href="#">
-            <p class="text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">Preview</p>
-          </a>
-          <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#A18249] pb-[13px] pt-4" href="#">
-            <p class="text-[#B88746] text-sm font-bold leading-normal tracking-[0.015em]">Adjust Layout</p>
-          </a>
-        </div>
-      </div>
-      <div class="grid grid-cols-4 gap-3 p-4">
-        <div class="flex flex-col gap-3 pb-3">
-          <div
-              class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl border border-gray-400"
-              style='background-image: url("https://cdn.usegalileo.ai/sdxl10/437a6257-2ac6-4d24-a9ba-1279c9ddfa78.png");'
-          ></div>
-          <div>
-            <p class="font-medium leading-normal">slide1</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 pb-3">
-          <div
-              class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl border border-gray-400"
-              style='background-image: url("https://cdn.usegalileo.ai/sdxl10/8b1d86c8-5cd1-4abd-8512-9f4452e7ca35.png");'
-          ></div>
-          <div>
-            <p class="font-medium leading-normal">slide2</p>
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 pb-3">
-          <div
-              class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl border border-gray-400"
-              style='background-image: url("https://cdn.usegalileo.ai/sdxl10/648ee6ff-2b74-4179-af92-cbe7f5ee1bf2.png");'
-          ></div>
-          <div>
-            <p class="font-medium leading-normal">slide3</p>
+    <div class="layout-content-container flex max-w-[1200px] flex-1">
+      <div class="overflow-hidden flex-[20_1_0]">
+        <div class="h-full overflow-y-auto border-r border-gray-200">
+          <div class="space-y-2 p-2">
+            <div class="slide-item-box border-primary">
+              <img class="absolute h-full w-full" alt="Slide 1" loading="lazy" decoding="async"
+                   src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW5zfGVufDB8fDB8fHww">
+              <div class="slide-number">1</div>
+            </div>
+            <div class="slide-item-box border-transparent">
+              <img class="absolute h-full w-full" alt="Slide 2" loading="lazy" decoding="async" data-nimg="fill"
+                   src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhY2h8ZW58MHx8MHx8fDA%3D">
+              <div class="slide-number">2</div>
+            </div>
+            <div class="slide-item-box border-transparent">
+              <img class="absolute h-full w-full" alt="Slide 3" loading="lazy" decoding="async"
+                   src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2l0eSUyMHNreWxpbmV8ZW58MHx8MHx8fDA%3D">
+              <div class="slide-number">3</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="layout-content-container flex flex-col w-[360px]">
-      <div class="pb-3">
-        <div class="flex border-b border-gray-200 px-4 gap-8">
-          <a class="flex flex-col items-center justify-center border-b-[3px] border-b-[#00AB6B] text-[#1C160C] pb-[13px] pt-4" href="#">
-            <p class="text-[#1C160C] text-sm font-bold leading-normal tracking-[0.015em]">Lyrics</p>
-          </a>
-          <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#A18249] pb-[13px] pt-4" href="#">
-            <p class="text-[#B88746] text-sm font-bold leading-normal tracking-[0.015em]">Settings</p>
-          </a>
-        </div>
-      </div>
-      <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-        <label class="flex flex-col min-w-40 flex-1">
+      <div class="overflow-hidden flex-[80_1_0]">
+        <div class="h-full p-4">
+          <div class="mt-2"><h2 class="text-xl font-semibold mb-4">Adjust Layout</h2>
+            <div class="aspect-video relative overflow-hidden rounded-lg border border-gray-200"><img
+                alt="Mountain Landscape" loading="lazy" decoding="async" data-nimg="fill" class="object-cover"
+                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW5zfGVufDB8fDB8fHww"
+                style="position: absolute; height: 100%; width: 100%; inset: 0px; color: transparent;">
+              <div
+                  style="position: absolute; left: 44.0601%; top: 7.76009%; width: 200px; height: 100px; border: 2px dashed rgb(0, 171, 107); cursor: move; overflow: hidden;">
                 <textarea
-                    placeholder="Type or paste lyrics here..."
-                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-0 border border-gray-200 bg-[#FFFFFF] focus:border-[#E9DFCE] min-h-36 placeholder:text-[#B88746] p-[15px] text-base font-normal leading-normal"
-                ></textarea>
-        </label>
+                    style="width: 100%; height: 100%; resize: none; border: none; background: transparent; outline: none; color: white; text-shadow: black 1px 1px 2px; font-size: 16px; padding: 5px;">Enter your text here</textarea>
+                <div
+                    style="position: absolute; right: -5px; bottom: -5px; width: 10px; height: 10px; background: rgb(0, 171, 107); cursor: se-resize;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <LyricsArea/>
   </div>
 </template>
 
 <script setup>
 
+import LyricsArea from "@/components/LyricsArea.vue";
 </script>
 
 <style scoped>
