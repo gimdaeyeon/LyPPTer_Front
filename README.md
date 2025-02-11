@@ -37,4 +37,4 @@ ppt 화면을 미리보기를 순수하게 구현하는 것은 무리가 있다�
 최종적으로 Fabric.js를 사용하기로 결정
 - chatGPT,퍼플렉시티, claude, deepSeek 같은 내용으로 질문했을 때 deepSeek를 제외한 ai가 모두 fabric.js를 선택
 - ppt의 많은 기능이 필요하지 않고 크게 배경설정, 텍스트 박스 설정 기능이 필요한데 이 기능을 다루는데 설정이 간편
-- 실제 ppt파일을 생성핧 때 사용할 PptxGenJs와 연동이 쉬움
+- 실제 ppt파일을 생성할 때 사용할 PptxGenJs와 연동이 쉬움
