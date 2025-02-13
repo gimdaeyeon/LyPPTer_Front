@@ -5,9 +5,9 @@
       <div class="overflow-hidden flex-[80_1_0]">
         <div class="h-full p-4">
           <div>
-            <input class="flex h-10 w-full rounded-md border border-input border-gray-200 bg-background px-3
+            <CustomeInput class="flex h-10 w-full rounded-md border border-input border-gray-200 bg-background px-3
             py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-1 disabled:cursor-not-allowed
-            disabled:opacity-50 text-lg mb-4" placeholder="Enter presentation title" type="text">
+            disabled:opacity-50 text-lg mb-4" placeholder="Enter presentation title" type="text" v-model="lyrics"/>
             <div ref="canvasContainer" class="aspect-video relative overflow-hidden rounded-lg border border-gray-200">
               <canvas ref="canvas"></canvas>
               <!--              <img class="absolute h-full w-full"-->
@@ -34,11 +34,14 @@
 <script setup>
 import LyricsArea from "@/components/LyricsArea.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
-import {onMounted, ref} from "vue";
-import {Canvas, Textbox,Text } from "fabric";
+import {onMounted, ref, watch} from "vue";
+import {Canvas, Textbox} from "fabric";
+import CustomeInput from "@/components/common/tag/CustomeInput.vue";
+import TextArea from "@/components/common/tag/TextArea.vue";
 
 const canvasContainer = ref();
 const canvas = ref();
+const lyrics = ref('가사')
 let fabricCanvas;
 
 
@@ -51,8 +54,8 @@ onMounted(() => {
     // selection: true
   });
 
-  const text = new Textbox("가사 미리보기", {
-    width:200,
+  const text = new Textbox('가사', {
+    width: 200,
     left: 100,
     top: 100,
     fontSize: 30,
@@ -63,7 +66,14 @@ onMounted(() => {
 
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
+
+  watch(lyrics, (newLyrics) => {
+    text.set('text', newLyrics);
+    fabricCanvas.renderAll();
+  });
+
 });
+
 
 </script>
 
