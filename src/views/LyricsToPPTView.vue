@@ -57,6 +57,19 @@ onMounted(() => {
     // selection: true
   });
 
+  // 객체가 이동할 때마다 캔버스 경계를 벗어나지 않도록 제한
+  fabricCanvas.on('object:moving', function (e) {
+    const object = e.target;
+    // 좌측, 우측 경계 검사
+    if (object.left < 0) object.left = 0;
+    if (object.top < 0) object.top = 0;
+    if (object.left + object.width > fabricCanvas.width) object.left = fabricCanvas.width - object.width;
+    if (object.top + object.height > fabricCanvas.height) object.top = fabricCanvas.height - object.height;
+    // 객체가 이동할 때 좌표 업데이트
+    object.setCoords();
+  });
+
+
   const text = new Textbox(lyrics.value, {
     width: 400,
     left: 175,
