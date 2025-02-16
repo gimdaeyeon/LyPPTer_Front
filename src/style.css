@@ -24,6 +24,17 @@ body{
     @apply absolute bottom-1 left-1 bg-black/50 px-1 rounded text-white text-xs;
 }
 
+.lyrics-mode-tab{
+    @apply flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#B88746] pb-[13px] pt-4 cursor-pointer;
+}
+
+.mode-on {
+    @apply border-b-[#00AB6B] text-[#1C160C];
+}
+
+.mode-text{
+    @apply text-sm font-bold leading-normal;
+}
 
 
 

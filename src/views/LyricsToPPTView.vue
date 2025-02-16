@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import LyricsArea from "@/components/LyricsArea.vue";
+import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
 import {onMounted, ref, watch} from "vue";
 import {Canvas, Textbox} from "fabric";
