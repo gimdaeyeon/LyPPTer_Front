@@ -1,30 +1,31 @@
 @import "tailwindcss";
+
 @config "../tailwind.config.js";
 
-:root{
+:root {
     --main-color: #00AB6B;
     --main-hover-color: #009960;
-    --sub-color:#B88746;
-    --border-color:rgb(233 223 206);
+    --sub-color: #B88746;
+    --border-color: rgb(233 223 206);
 }
 
-body{
-    font-family: "Plus Jakarta Sans", "Noto Sans","Noto Sans KR", serif;
+body {
+    font-family: "Plus Jakarta Sans", "Noto Sans", "Noto Sans KR", serif !important;
 }
 
-.h-menu-item{
+.h-menu-item {
     @apply text-[#1C160C] text-sm font-medium leading-normal;
 }
 
-.slide-item-box{
+.slide-item-box {
     @apply relative aspect-[16/9] cursor-pointer overflow-hidden rounded-md border-2;
 }
 
-.slide-number{
+.slide-number {
     @apply absolute bottom-1 left-1 bg-black/50 px-1 rounded text-white text-xs;
 }
 
-.lyrics-mode-tab{
+.lyrics-mode-tab {
     @apply flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#B88746] pb-[13px] pt-4 cursor-pointer;
 }
 
@@ -32,8 +33,12 @@ body{
     @apply border-b-[#00AB6B] text-[#1C160C];
 }
 
-.mode-text{
+.mode-text {
     @apply text-sm font-bold leading-normal;
+}
+
+.input {
+    @apply flex h-10 w-full rounded-md border border-gray-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 
