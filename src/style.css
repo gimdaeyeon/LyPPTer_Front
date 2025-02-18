@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@config "../tailwind.config.js";
-
 :root {
     --main-color: #00AB6B;
     --main-hover-color: #009960;
@@ -10,7 +8,12 @@
 }
 
 body {
+    -ms-overflow-style: none;
     font-family: "Plus Jakarta Sans", "Noto Sans", "Noto Sans KR", serif !important;
+}
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 .h-menu-item {
@@ -40,6 +43,11 @@ body {
 .input {
     @apply flex h-10 w-full rounded-md border border-gray-200 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50;
 }
+
+.text-align-btn{
+    @apply border border-gray-200 size-10 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors;
+}
+
 
 
 

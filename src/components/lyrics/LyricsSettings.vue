@@ -6,20 +6,7 @@
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Text Alignment</label>
-      <div class="mt-2 flex gap-2">
-        <button class="border border-gray-200 size-10 rounded-md cursor-pointer hover:bg-gray-100">
-          <i class="fa-solid fa-align-left"></i>
-        </button>
-        <button class="border border-gray-200 size-10 rounded-md cursor-pointer hover:bg-gray-100">
-          <i class="fa-solid fa-align-center"></i>
-        </button>
-        <button class="border border-gray-200 size-10 rounded-md cursor-pointer hover:bg-gray-100">
-          <i class="fa-solid fa-align-right"></i>
-        </button>
-        <button class="border border-gray-200 size-10 rounded-md cursor-pointer hover:bg-gray-100">
-          <i class="fa-solid fa-align-justify"></i>
-        </button>
-      </div>
+      <TextAlignSelector v-model="textAlign"/>
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Position</label>
@@ -38,6 +25,10 @@
 
 <script setup>
 
+import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
+import {ref} from "vue";
+
+const textAlign = ref('left');
 </script>
 
 <style scoped>
