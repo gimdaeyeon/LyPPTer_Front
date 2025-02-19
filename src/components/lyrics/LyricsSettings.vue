@@ -23,10 +23,14 @@
       </div>
     </div>
     <div class="w-full">
-      <div>
+      <div class="flex justify-between items-center">
         <label class="text-sm font-medium">Background</label>
         <div>
-          <button class="text-align-btn">
+          <button class="icon-btn" :class="{selected:!isBgImg}" @click="isBgImg=false">
+            <i class="fa-solid fa-palette"></i>
+          </button>
+          <button class="icon-btn" :class="{selected:isBgImg}" @click="isBgImg=true">
+            <i class="fa-regular fa-image"></i>
           </button>
         </div>
       </div>
@@ -46,9 +50,16 @@ const positionX = ref(30);
 const positionY = ref(50);
 const textBoxWidth= ref(200);
 const textBoxHeight= ref(200);
+const isBgImg = ref(false);
+
 
 </script>
 
 <style scoped>
-
+.selected{
+  background-color: #E5F6F0;
+}
+.selected>i{
+  color: #00AB6B;
+}
 </style>

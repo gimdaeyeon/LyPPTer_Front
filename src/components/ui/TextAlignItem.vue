@@ -1,5 +1,5 @@
 <template>
-  <button class="text-align-btn">
+  <button class="icon-btn border border-gray-200">
       <i :class="`fa-solid fa-align-${align}`"></i>
   </button>
 </template>
