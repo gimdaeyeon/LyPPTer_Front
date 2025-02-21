@@ -34,7 +34,10 @@
           </button>
         </div>
       </div>
-      <input type="number" class="input px-3 mt-2"/>
+      <div class="flex gap-2 mt-2">
+        <input type="color" class="color-input" v-model="bgColor"/>
+        <input type="text" class="text-input" v-model="bgColor">
+      </div>
     </div>
   </div>
 </template>
@@ -48,18 +51,20 @@ import LabeledInput from "@/components/ui/LabeledInput.vue";
 const textAlign = ref('left');
 const positionX = ref(30);
 const positionY = ref(50);
-const textBoxWidth= ref(200);
-const textBoxHeight= ref(200);
+const textBoxWidth = ref(200);
+const textBoxHeight = ref(200);
 const isBgImg = ref(false);
+const bgColor= ref('#000000');
 
 
 </script>
 
 <style scoped>
-.selected{
+.selected {
   background-color: #E5F6F0;
 }
-.selected>i{
+
+.selected > i {
   color: #00AB6B;
 }
 </style>

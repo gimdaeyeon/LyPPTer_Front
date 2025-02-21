@@ -54,6 +54,26 @@ body::-webkit-scrollbar {
     @apply font-semibold absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-500;
 }
 
+/* color input 스타일 */
+.color-input {
+    @apply w-10 h-10 border border-gray-200 rounded-lg flex-shrink-0; /* 정사각형 유지 */
+}
+
+.color-input::-webkit-color-swatch {
+    border-radius: 50%; /* 내부 색상 선택 원을 정확한 원으로 만듦 */
+    border: none;
+}
+
+.color-input::-moz-color-swatch {
+    border-radius: 50%;
+    border: none;
+}
+
+/* text input 스타일 */
+.text-input {
+    @apply flex-1 h-10 rounded-md border border-gray-200 px-3 py-2 text-sm;
+}
+
 
 
 

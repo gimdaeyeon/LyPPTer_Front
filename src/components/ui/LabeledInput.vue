@@ -1,7 +1,7 @@
 <template>
     <div class="flex-1 relative">
       <label class="labeled-input-label">{{label}}</label>
-      <input class="input pl-14" min="50" max="500" :type="type"
+      <input class="input pl-14 pr-2" min="50" max="500" :type="type"
              v-model="model"
       >
     </div>
