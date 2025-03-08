@@ -37,7 +37,8 @@
       <div class="flex gap-2 mt-2">
         <template v-if="isBgImg">
           <input id="bg-img" class="hidden" type="file" accept="image/*">
-          <label for="bg-img" class="input justify-center items-center gap-2 cursor-pointer hover:bg-gray-100 font-semibold">
+          <label for="bg-img"
+                 class="input justify-center items-center gap-2 cursor-pointer hover:bg-gray-100 font-semibold">
             <i class="fa-solid fa-upload"></i>
             Choose image
           </label>
@@ -54,17 +55,25 @@
 <script setup>
 
 import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
-import {ref} from "vue";
 import LabeledInput from "@/components/ui/LabeledInput.vue";
+import {useLyrics} from "@/store/useLyrics.js";
+import {storeToRefs} from "pinia";
 
-const fontSize = ref(24);
-const textAlign = ref('left');
-const positionX = ref(30);
-const positionY = ref(50);
-const textBoxWidth = ref(200);
-const textBoxHeight = ref(200);
-const isBgImg = ref(true);
-const bgColor= ref('#000000');
+const lyricsStore = useLyrics();
+const {
+  fontSize, textAlign, positionX,
+  positionY, textBoxWidth,
+  textBoxHeight, isBgImg, bgColor
+} = storeToRefs(lyricsStore);
+
+// const fontSize = ref(24);
+// const textAlign = ref('left');
+// const positionX = ref(30);
+// const positionY = ref(50);
+// const textBoxWidth = ref(200);
+// const textBoxHeight = ref(200);
+// const isBgImg = ref(false);
+// const bgColor= ref('#000000');
 
 
 </script>

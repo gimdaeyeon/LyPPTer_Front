@@ -37,14 +37,14 @@ import SlidePreviewList from "@/components/SlidePreviewList.vue";
 import {onMounted, ref, watch} from "vue";
 import {Canvas, Textbox} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
-import TextArea from "@/components/common/tag/TextArea.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
+import {useFabricBinding} from "@/composables/useFabricBinding.js";
 
 const canvasContainer = ref();
 const canvas = ref();
 const lyricsStore = useLyrics();
-const {lyrics} = storeToRefs(lyricsStore);
+const {lyrics,fontSize,textAlign} = storeToRefs(lyricsStore);
 let fabricCanvas;
 
 
@@ -72,22 +72,32 @@ onMounted(() => {
 
   const text = new Textbox(lyrics.value, {
     width: 400,
+    height:200,
     left: 175,
     top: 70,
-    fontSize: 30,
+    fontSize: fontSize.value,
     selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
     lockScalingX: false, // x축 크기 조절 가능
     lockScalingY: false, // y축 크기 조절 가능
-    textAlign: 'center',
-    padding: 10
+    textAlign: textAlign.value,
+    padding: 10,
+    borderColor: '#00AB6B',
+    borderDashArray: [6],
+    cornerColor: '#00AB6B',
+    cornerSize: 10
   });
+
+  text.setControlVisible("mtr", false); // 회전 핸들 숨기기
+  text.setControlVisible("mt", false);
+  text.setControlVisible("mb", false);
 
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
 
-  watch(lyrics, (newLyrics) => {
-    text.set('text', newLyrics);
-    fabricCanvas.renderAll();
+  useFabricBinding(fabricCanvas,text,{
+    text:lyrics,
+    fontSize:fontSize,
+    textAlign: textAlign,
   });
 
 });
