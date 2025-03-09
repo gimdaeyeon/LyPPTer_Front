@@ -5,6 +5,13 @@
       <input type="number" class="input px-3 mt-2" v-model="fontSize"/>
     </div>
     <div class="w-full">
+      <label class="text-sm font-medium">Text Color</label>
+      <div class="flex gap-2 mt-2">
+        <input type="color" class="color-input" v-model="textColor"/>
+        <input type="text" class="text-input" v-model="textColor">
+      </div>
+    </div>
+    <div class="w-full">
       <label class="text-sm font-medium">Text Alignment</label>
       <TextAlignSelector v-model="textAlign"/>
     </div>
@@ -63,18 +70,8 @@ const lyricsStore = useLyrics();
 const {
   fontSize, textAlign, positionX,
   positionY, textBoxWidth,
-  textBoxHeight, isBgImg, bgColor
+  textBoxHeight, isBgImg, bgColor, textColor
 } = storeToRefs(lyricsStore);
-
-// const fontSize = ref(24);
-// const textAlign = ref('left');
-// const positionX = ref(30);
-// const positionY = ref(50);
-// const textBoxWidth = ref(200);
-// const textBoxHeight = ref(200);
-// const isBgImg = ref(false);
-// const bgColor= ref('#000000');
-
 
 </script>
 

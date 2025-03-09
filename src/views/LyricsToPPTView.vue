@@ -10,18 +10,6 @@
             disabled:opacity-50 text-lg mb-4" placeholder="Enter presentation title" type="text"/>
             <div ref="canvasContainer" class="aspect-video relative overflow-hidden rounded-lg border border-gray-200">
               <canvas ref="canvas"></canvas>
-              <!--              <img class="absolute h-full w-full"-->
-              <!--                   alt="Mountain Landscape" loading="lazy" decoding="async" data-nimg="fill"-->
-              <!--                   src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&amp;auto=format&amp;fit=crop&amp;q=60&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW5zfGVufDB8fDB8fHww">-->
-              <!--              <div class="absolute w-[200] h-[100] border-2 border-dashed border-primary cursor-move overflow-hidden"-->
-              <!--                   style="left: 44.0601%; top: 7.76009%;">-->
-              <!--                <textarea class="w-full h-full resize-none border-none text-white text-base p-1"-->
-              <!--                >Enter your text here</textarea>-->
-              <!--                <div class="absolute size-[10px] bg-primary cursor-se-resize"-->
-              <!--                     style="right: -5px; bottom: -5px;">-->
-
-              <!--                </div>-->
-              <!--              </div>-->
             </div>
           </div>
         </div>
@@ -44,7 +32,7 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = ref();
 const canvas = ref();
 const lyricsStore = useLyrics();
-const {lyrics,fontSize,textAlign} = storeToRefs(lyricsStore);
+const {lyrics,fontSize,textAlign,textBoxWidth,textBoxHeight,textColor} = storeToRefs(lyricsStore);
 let fabricCanvas;
 
 
@@ -71,8 +59,8 @@ onMounted(() => {
 
 
   const text = new Textbox(lyrics.value, {
-    width: 400,
-    height:200,
+    width: textBoxWidth.value,
+    height:textBoxHeight.value,
     left: 175,
     top: 70,
     fontSize: fontSize.value,
@@ -84,7 +72,8 @@ onMounted(() => {
     borderColor: '#00AB6B',
     borderDashArray: [6],
     cornerColor: '#00AB6B',
-    cornerSize: 10
+    cornerSize: 10,
+    fill: textColor,
   });
 
   text.setControlVisible("mtr", false); // 회전 핸들 숨기기
@@ -98,6 +87,9 @@ onMounted(() => {
     text:lyrics,
     fontSize:fontSize,
     textAlign: textAlign,
+    width: textBoxWidth,
+    height:textBoxHeight,
+    fill:textColor,
   });
 
 });
