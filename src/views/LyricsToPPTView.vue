@@ -22,19 +22,21 @@
 <script setup>
 import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import {Canvas, Textbox} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {useFabricBinding} from "@/composables/useFabricBinding.js";
 
-const canvasContainer = ref();
-const canvas = ref();
+const canvasContainer = useTemplateRef('canvasContainer');
+const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics,fontSize,textAlign,textBoxWidth,textBoxHeight,textColor} = storeToRefs(lyricsStore);
+const {
+  lyrics,fontSize,textAlign,textBoxWidth,textBoxHeight,
+  textColor,bgColor, positionX,positionY,
+} = storeToRefs(lyricsStore);
 let fabricCanvas;
-
 
 onMounted(() => {
   const {clientWidth, clientHeight} = canvasContainer.value;
@@ -42,7 +44,7 @@ onMounted(() => {
   fabricCanvas = new Canvas(canvas.value, {
     width: clientWidth,
     height: clientHeight,
-    // selection: true
+    backgroundColor: bgColor.value
   });
 
   // 객체가 이동할 때마다 캔버스 경계를 벗어나지 않도록 제한
@@ -61,8 +63,8 @@ onMounted(() => {
   const text = new Textbox(lyrics.value, {
     width: textBoxWidth.value,
     height:textBoxHeight.value,
-    left: 175,
-    top: 70,
+    left: positionX.value,
+    top: positionY.value,
     fontSize: fontSize.value,
     selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
     lockScalingX: false, // x축 크기 조절 가능
@@ -73,7 +75,7 @@ onMounted(() => {
     borderDashArray: [6],
     cornerColor: '#00AB6B',
     cornerSize: 10,
-    fill: textColor,
+    fill: textColor.value,
   });
 
   text.setControlVisible("mtr", false); // 회전 핸들 숨기기
@@ -90,9 +92,30 @@ onMounted(() => {
     width: textBoxWidth,
     height:textBoxHeight,
     fill:textColor,
+    left: positionX,
+    top: positionY,
   });
 
+  watch(bgColor,(newColor)=>{
+    fabricCanvas.set('backgroundColor',newColor);
+    fabricCanvas.renderAll();
+  });
+
+  window.addEventListener('resize',resizeCanvas);
 });
+
+onUnmounted(()=>{
+  window.removeEventListener('resize',resizeCanvas);// 컴포넌트 해제 시 이벤트 제거
+});
+function resizeCanvas(){
+  if(fabricCanvas){
+    fabricCanvas.setWidth(canvasContainer.value.clientWidth)
+    fabricCanvas.setHeight(canvasContainer.value.clientHeight)
+    fabricCanvas.renderAll()
+  }
+}
+
+
 
 
 </script>

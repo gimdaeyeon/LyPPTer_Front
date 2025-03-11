@@ -5,8 +5,8 @@ export function useFabricBinding(fabricCanvas, fabricObj, bindings){
         watch(state,(newValue)=>{
             if(fabricObj){
                 fabricObj.set(key,newValue);
-                fabricCanvas.renderAll()
+                fabricCanvas.renderAll();
             }
-        })
+        });
     })
 }
