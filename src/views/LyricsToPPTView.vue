@@ -113,10 +113,8 @@ function resizeCanvas(){
     fabricCanvas.setHeight(canvasContainer.value.clientHeight)
     fabricCanvas.renderAll()
   }
+
 }
-
-
-
 
 </script>
 
