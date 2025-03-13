@@ -22,7 +22,7 @@
 <script setup>
 import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
-import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
+import {onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch} from "vue";
 import {Canvas, Textbox} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
@@ -32,10 +32,12 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
+const {lyrics} = storeToRefs(lyricsStore);
 const {
-  lyrics,fontSize,textAlign,textBoxWidth,textBoxHeight,
+  fontSize,textAlign,textBoxWidth,textBoxHeight,
   textColor,bgColor, positionX,positionY,
-} = storeToRefs(lyricsStore);
+} = toRefs(lyricsStore.settings);
+
 let fabricCanvas;
 
 onMounted(() => {

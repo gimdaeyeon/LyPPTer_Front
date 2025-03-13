@@ -65,13 +65,18 @@ import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
 import LabeledInput from "@/components/ui/LabeledInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
+import {toRefs} from "vue";
 
 const lyricsStore = useLyrics();
-const {
-  fontSize, textAlign, positionX,
+// const {
+//   fontSize, textAlign, positionX,
+//   positionY, textBoxWidth,
+//   textBoxHeight, isBgImg, bgColor, textColor
+// } = storeToRefs(lyricsStore);
+const {fontSize, textAlign, positionX,
   positionY, textBoxWidth,
-  textBoxHeight, isBgImg, bgColor, textColor
-} = storeToRefs(lyricsStore);
+  textBoxHeight, isBgImg, bgColor, textColor} = toRefs(lyricsStore.settings);
+
 
 </script>
 
