@@ -32,7 +32,7 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics} = storeToRefs(lyricsStore);
+const {lyrics,slides } = storeToRefs(lyricsStore);
 const {
   fontSize,textAlign,textBoxWidth,textBoxHeight,
   textColor,bgColor, positionX,positionY,
@@ -115,8 +115,9 @@ function resizeCanvas(){
     fabricCanvas.setHeight(canvasContainer.value.clientHeight)
     fabricCanvas.renderAll()
   }
-
 }
+
+
 
 </script>
 
