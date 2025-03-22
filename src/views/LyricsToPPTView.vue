@@ -22,7 +22,7 @@
 <script setup>
 import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
-import {onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch} from "vue";
+import {onMounted, onUnmounted, toRefs, useTemplateRef, watch} from "vue";
 import {Canvas, Textbox} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
@@ -32,18 +32,17 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics,slides } = storeToRefs(lyricsStore);
+const {lyrics, slides, currentSlideIndex, lyricsCanvas} = storeToRefs(lyricsStore);
 const {
-  fontSize,textAlign,textBoxWidth,textBoxHeight,
-  textColor,bgColor, positionX,positionY,
+  fontSize, textAlign, textBoxWidth, textBoxHeight,
+  textColor, bgColor, positionX, positionY,
 } = toRefs(lyricsStore.settings);
 
-let fabricCanvas;
-
 onMounted(() => {
+
   const {clientWidth, clientHeight} = canvasContainer.value;
 
-  fabricCanvas = new Canvas(canvas.value, {
+  const fabricCanvas = new Canvas(canvas.value, {
     width: clientWidth,
     height: clientHeight,
     backgroundColor: bgColor.value
@@ -61,10 +60,9 @@ onMounted(() => {
     object.setCoords();
   });
 
-
   const text = new Textbox(lyrics.value, {
     width: textBoxWidth.value,
-    height:textBoxHeight.value,
+    height: textBoxHeight.value,
     left: positionX.value,
     top: positionY.value,
     fontSize: fontSize.value,
@@ -87,36 +85,43 @@ onMounted(() => {
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
 
-  useFabricBinding(fabricCanvas,text,{
-    text:lyrics,
-    fontSize:fontSize,
+  useFabricBinding(fabricCanvas, text, {
+    text: lyrics,
+    fontSize: fontSize,
     textAlign: textAlign,
     width: textBoxWidth,
-    height:textBoxHeight,
-    fill:textColor,
+    height: textBoxHeight,
+    fill: textColor,
     left: positionX,
     top: positionY,
   });
 
-  watch(bgColor,(newColor)=>{
-    fabricCanvas.set('backgroundColor',newColor);
+  watch(bgColor, (newColor) => {
+    fabricCanvas.set('backgroundColor', newColor);
     fabricCanvas.renderAll();
   });
 
-  window.addEventListener('resize',resizeCanvas);
-});
+  window.addEventListener('resize', resizeCanvas);
+  lyricsCanvas.value = fabricCanvas;
 
-onUnmounted(()=>{
-  window.removeEventListener('resize',resizeCanvas);// 컴포넌트 해제 시 이벤트 제거
-});
-function resizeCanvas(){
-  if(fabricCanvas){
-    fabricCanvas.setWidth(canvasContainer.value.clientWidth)
-    fabricCanvas.setHeight(canvasContainer.value.clientHeight)
-    fabricCanvas.renderAll()
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', resizeCanvas);// 컴포넌트 해제 시 이벤트 제거
+
+  });
+
+  function resizeCanvas() {
+    if (fabricCanvas) {
+      fabricCanvas.setDimensions({
+        width: canvasContainer.value.clientWidth,
+        height:canvasContainer.value.clientHeight,
+      })
+      fabricCanvas.renderAll()
+    }
   }
-}
 
+  slides.value[currentSlideIndex.value].canvas = fabricCanvas;
+});
 
 
 </script>
