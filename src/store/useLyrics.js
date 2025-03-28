@@ -2,10 +2,7 @@ import {defineStore} from "pinia";
 import {computed, reactive, ref} from "vue";
 
 export const useLyrics = defineStore('lyrics', () => {
-    const slides = ref([{
-        text: 'hello',
-        canvas: null,
-    }]); // 슬라이드 목록
+    const fabricCanvas = ref(null);
     const currentSlideIndex = ref(0); // 현재 활성 슬라이드 인덱스
     const lyrics = ref('가사를 입력하세요'); // 사용자가 입력한 전체 가사
     const lyricsCanvas = ref(null);
@@ -27,6 +24,8 @@ export const useLyrics = defineStore('lyrics', () => {
         const lines = lyrics.value.split(/(?:\r?\n){2,}/).map(line => line.trim());
         return lines[currentSlideIndex.value];
     });
+
+    const lyricsSlides = computed(()=> lyrics.value.split(/(?:\r?\n){2,}/).map(line => line.trim()));
 
     // 가사를 분할하여 슬라이드 생성
     // function generateSlides() {
@@ -50,8 +49,8 @@ export const useLyrics = defineStore('lyrics', () => {
     // watch(lyrics, generateSlides);
 
     return {
-        lyrics, slides, currentSlideIndex, settings,
-        lyricsCanvas, currentLyrics,
-        // generateSlides,
+        lyrics, currentSlideIndex, settings,
+        lyricsCanvas, currentLyrics, fabricCanvas,
+        lyricsSlides,
     }
 });

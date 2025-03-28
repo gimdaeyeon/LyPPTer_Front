@@ -78,6 +78,7 @@ const {fontSize, textAlign, positionX,
   textBoxHeight, isBgImg, bgColor, textColor} = toRefs(lyricsStore.settings);
 
 
+
 </script>
 
 <style scoped>

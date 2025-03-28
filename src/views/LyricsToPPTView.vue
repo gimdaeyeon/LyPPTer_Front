@@ -32,7 +32,7 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, slides, currentSlideIndex, lyricsCanvas} = storeToRefs(lyricsStore);
+const {lyrics, currentSlideIndex,currentLyrics, lyricsCanvas, fabricCanvas} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
@@ -42,20 +42,20 @@ onMounted(() => {
 
   const {clientWidth, clientHeight} = canvasContainer.value;
 
-  const fabricCanvas = new Canvas(canvas.value, {
+  fabricCanvas.value = new Canvas(canvas.value, {
     width: clientWidth,
     height: clientHeight,
     backgroundColor: bgColor.value
   });
 
   // 객체가 이동할 때마다 캔버스 경계를 벗어나지 않도록 제한
-  fabricCanvas.on('object:moving', function (e) {
+  fabricCanvas.value.on('object:moving', function (e) {
     const object = e.target;
     // 좌측, 우측 경계 검사
     if (object.left < 0) object.left = 0;
     if (object.top < 0) object.top = 0;
-    if (object.left + object.width > fabricCanvas.width) object.left = fabricCanvas.width - object.width;
-    if (object.top + object.height > fabricCanvas.height) object.top = fabricCanvas.height - object.height;
+    if (object.left + object.width > fabricCanvas.value.width) object.left = fabricCanvas.value.width - object.width;
+    if (object.top + object.height > fabricCanvas.value.height) object.top = fabricCanvas.value.height - object.height;
     // 객체가 이동할 때 좌표 업데이트
     object.setCoords();
   });
@@ -82,11 +82,11 @@ onMounted(() => {
   text.setControlVisible("mt", false);
   text.setControlVisible("mb", false);
 
-  fabricCanvas.add(text);
-  fabricCanvas.setActiveObject(text);
+  fabricCanvas.value.add(text);
+  fabricCanvas.value.setActiveObject(text);
 
-  useFabricBinding(fabricCanvas, text, {
-    text: lyrics,
+  useFabricBinding(fabricCanvas.value, text, {
+    text: currentLyrics,
     fontSize: fontSize,
     textAlign: textAlign,
     width: textBoxWidth,
@@ -97,12 +97,12 @@ onMounted(() => {
   });
 
   watch(bgColor, (newColor) => {
-    fabricCanvas.set('backgroundColor', newColor);
-    fabricCanvas.renderAll();
+    fabricCanvas.value.set('backgroundColor', newColor);
+    fabricCanvas.value.renderAll();
   });
 
   window.addEventListener('resize', resizeCanvas);
-  lyricsCanvas.value = fabricCanvas;
+  lyricsCanvas.value = fabricCanvas.value;
 
 
   onUnmounted(() => {
@@ -111,16 +111,15 @@ onMounted(() => {
   });
 
   function resizeCanvas() {
-    if (fabricCanvas) {
-      fabricCanvas.setDimensions({
+    if (fabricCanvas.value) {
+      fabricCanvas.value.setDimensions({
         width: canvasContainer.value.clientWidth,
         height:canvasContainer.value.clientHeight,
       })
-      fabricCanvas.renderAll()
+      fabricCanvas.value.renderAll()
     }
   }
 
-  slides.value[currentSlideIndex.value].canvas = fabricCanvas;
 });
 
 
