@@ -32,10 +32,11 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, currentSlideIndex,currentLyrics, lyricsCanvas, fabricCanvas} = storeToRefs(lyricsStore);
+const {lyrics,currentLyrics, fabricCanvas} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
+  canvasWidth, canvasHeight,
 } = toRefs(lyricsStore.settings);
 
 onMounted(() => {
@@ -47,6 +48,8 @@ onMounted(() => {
     height: clientHeight,
     backgroundColor: bgColor.value
   });
+  canvasWidth.value = clientWidth;
+  canvasHeight.value = clientHeight;
 
   // 객체가 이동할 때마다 캔버스 경계를 벗어나지 않도록 제한
   fabricCanvas.value.on('object:moving', function (e) {
@@ -102,12 +105,9 @@ onMounted(() => {
   });
 
   window.addEventListener('resize', resizeCanvas);
-  lyricsCanvas.value = fabricCanvas.value;
-
 
   onUnmounted(() => {
     window.removeEventListener('resize', resizeCanvas);// 컴포넌트 해제 시 이벤트 제거
-
   });
 
   function resizeCanvas() {
@@ -116,6 +116,8 @@ onMounted(() => {
         width: canvasContainer.value.clientWidth,
         height:canvasContainer.value.clientHeight,
       })
+      canvasWidth.value = canvasContainer.value.clientWidth;
+      canvasHeight.value = canvasContainer.value.clientHeight;
       fabricCanvas.value.renderAll()
     }
   }
