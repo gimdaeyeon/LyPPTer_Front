@@ -47,7 +47,7 @@ body::-webkit-scrollbar {
 }
 
 .icon-btn{
-    @apply size-10 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors;
+    @apply size-10 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors min-h-10 min-w-10;
 }
 
 .labeled-input-label{

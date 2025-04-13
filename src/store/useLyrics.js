@@ -2,7 +2,6 @@ import {defineStore} from "pinia";
 import {computed, reactive, ref, watch} from "vue";
 
 export const useLyrics = defineStore('lyrics', () => {
-    const fabricCanvas = ref(null);
     const currentSlideIdx = ref(0); // 현재 활성 슬라이드 인덱스
     const lyrics = ref('가사를 입력하세요'); // 사용자가 입력한 전체 가사
 
@@ -22,11 +21,11 @@ export const useLyrics = defineStore('lyrics', () => {
     });
 
     const currentLyrics = computed(()=>{
-        const lines = lyrics.value.split(/(?:\r?\n){2,}/).map(line => line.trim());
+        const lines = lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim());
         return lines[currentSlideIdx.value];
     });
 
-    const lyricsSlides = computed(()=> lyrics.value.split(/(?:\r?\n){2,}/).map(line => line.trim()));
+    const lyricsSlides = computed(()=> lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim()));
 
     watch(lyrics, (newLyrics) => {
         lyrics.value = newLyrics.replace(/(?:\r?\n){2,}/g, '\n\n');
@@ -55,7 +54,7 @@ export const useLyrics = defineStore('lyrics', () => {
     // watch(lyrics, generateSlides);
 
     return {
-        lyrics, currentSlideIdx, settings, currentLyrics, fabricCanvas,
+        lyrics, currentSlideIdx, settings, currentLyrics,
         lyricsSlides,
     }
 });

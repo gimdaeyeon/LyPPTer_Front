@@ -32,18 +32,19 @@ import {useFabricBinding} from "@/composables/useFabricBinding.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics,currentLyrics, fabricCanvas} = storeToRefs(lyricsStore);
+const {lyrics,currentLyrics} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
   canvasWidth, canvasHeight,
 } = toRefs(lyricsStore.settings);
 
+
 onMounted(() => {
 
   const {clientWidth, clientHeight} = canvasContainer.value;
 
-  fabricCanvas.value = new Canvas(canvas.value, {
+  const fabricCanvas = new Canvas(canvas.value, {
     width: clientWidth,
     height: clientHeight,
     backgroundColor: bgColor.value
@@ -52,13 +53,13 @@ onMounted(() => {
   canvasHeight.value = clientHeight;
 
   // 객체가 이동할 때마다 캔버스 경계를 벗어나지 않도록 제한
-  fabricCanvas.value.on('object:moving', function (e) {
+  fabricCanvas.on('object:moving', function (e) {
     const object = e.target;
     // 좌측, 우측 경계 검사
     if (object.left < 0) object.left = 0;
     if (object.top < 0) object.top = 0;
-    if (object.left + object.width > fabricCanvas.value.width) object.left = fabricCanvas.value.width - object.width;
-    if (object.top + object.height > fabricCanvas.value.height) object.top = fabricCanvas.value.height - object.height;
+    if (object.left + object.width > fabricCanvas.width) object.left = fabricCanvas.width - object.width;
+    if (object.top + object.height > fabricCanvas.height) object.top = fabricCanvas.height - object.height;
     // 객체가 이동할 때 좌표 업데이트
     object.setCoords();
   });
@@ -85,10 +86,10 @@ onMounted(() => {
   text.setControlVisible("mt", false);
   text.setControlVisible("mb", false);
 
-  fabricCanvas.value.add(text);
-  fabricCanvas.value.setActiveObject(text);
+  fabricCanvas.add(text);
+  fabricCanvas.setActiveObject(text);
 
-  useFabricBinding(fabricCanvas.value, text, {
+  useFabricBinding(fabricCanvas, text, {
     text: currentLyrics,
     fontSize: fontSize,
     textAlign: textAlign,
@@ -100,8 +101,8 @@ onMounted(() => {
   });
 
   watch(bgColor, (newColor) => {
-    fabricCanvas.value.set('backgroundColor', newColor);
-    fabricCanvas.value.renderAll();
+    fabricCanvas.set('backgroundColor', newColor);
+    fabricCanvas.renderAll();
   });
 
   window.addEventListener('resize', resizeCanvas);
@@ -111,17 +112,16 @@ onMounted(() => {
   });
 
   function resizeCanvas() {
-    if (fabricCanvas.value) {
-      fabricCanvas.value.setDimensions({
+    if (fabricCanvas) {
+      fabricCanvas.setDimensions({
         width: canvasContainer.value.clientWidth,
         height:canvasContainer.value.clientHeight,
       })
       canvasWidth.value = canvasContainer.value.clientWidth;
       canvasHeight.value = canvasContainer.value.clientHeight;
-      fabricCanvas.value.renderAll()
+      fabricCanvas.renderAll()
     }
   }
-
 });
 
 

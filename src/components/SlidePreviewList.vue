@@ -19,7 +19,7 @@
 <script setup>
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
-import {computed, toRefs, useTemplateRef} from "vue";
+import {computed, toRefs} from "vue";
 import {StaticCanvas, Textbox} from "fabric";
 
 const lyricsStore = useLyrics();
@@ -29,7 +29,6 @@ const {
   textColor, bgColor, positionX, positionY, textAlign,
     canvasWidth,canvasHeight,
 } = toRefs(lyricsStore.settings);
-const img = useTemplateRef('img');
 
 // TODO watch를 사용한 방법 고려
 const previews = computed(() => {

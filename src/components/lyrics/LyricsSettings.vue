@@ -43,12 +43,18 @@
       </div>
       <div class="flex gap-2 mt-2">
         <template v-if="isBgImg">
-          <input id="bg-img" class="hidden" type="file" accept="image/*">
+          <input id="bg-img" class="hidden" type="file" accept="image/*" @change="onImageSelected"
+                 ref="fileRef"
+          >
           <label for="bg-img"
-                 class="input justify-center items-center gap-2 cursor-pointer hover:bg-gray-100 font-semibold">
-            <i class="fa-solid fa-upload"></i>
-            Choose image
+                 class="input justify-center items-center gap-2 cursor-pointer
+                 hover:bg-gray-100 font-semibold px-4">
+            <i class="fa-solid fa-upload shrink-0"></i>
+            <span class="truncate">{{fileName}}</span>
           </label>
+          <button v-if="hasFile" @click="clearImage" class="icon-btn text-sm">
+            <i class="pi pi-times text-red-400" ></i>
+          </button>
         </template>
         <template v-else>
           <input type="color" class="color-input" v-model="bgColor"/>
@@ -64,20 +70,28 @@
 import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
 import LabeledInput from "@/components/ui/LabeledInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
-import {storeToRefs} from "pinia";
-import {toRefs} from "vue";
+import {ref, toRefs, useTemplateRef} from "vue";
 
 const lyricsStore = useLyrics();
-// const {
-//   fontSize, textAlign, positionX,
-//   positionY, textBoxWidth,
-//   textBoxHeight, isBgImg, bgColor, textColor
-// } = storeToRefs(lyricsStore);
+const fileName = ref('Choose image');
+const fileRef = useTemplateRef('fileRef');
+const hasFile = ref(false);
+
 const {fontSize, textAlign, positionX,
   positionY, textBoxWidth,
   textBoxHeight, isBgImg, bgColor, textColor} = toRefs(lyricsStore.settings);
 
+// TODO input file에 이미지 캔버스 배경에 표시하기
+function onImageSelected(e){
+  fileName.value = e.target.files[0].name;
+  hasFile.value = true;
+}
 
+function clearImage(){
+  hasFile.value = false;
+  fileName.value = 'Choose image';
+  fileRef.value.value = '';
+}
 
 </script>
 
