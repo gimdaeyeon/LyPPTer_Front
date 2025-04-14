@@ -15,6 +15,7 @@ export const useLyrics = defineStore('lyrics', () => {
         textBoxWidth: 400,
         textBoxHeight: 50,
         isBgImg: false,
+        bgImg: null,
         bgColor: '#000000',
         canvasWidth:0,
         canvasHeight:0,

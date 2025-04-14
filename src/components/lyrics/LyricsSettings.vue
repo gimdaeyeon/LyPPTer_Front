@@ -52,7 +52,7 @@
             <i class="fa-solid fa-upload shrink-0"></i>
             <span class="truncate">{{fileName}}</span>
           </label>
-          <button v-if="hasFile" @click="clearImage" class="icon-btn text-sm">
+          <button v-if="bgImg" @click="clearImage" class="icon-btn text-sm">
             <i class="pi pi-times text-red-400" ></i>
           </button>
         </template>
@@ -75,22 +75,22 @@ import {ref, toRefs, useTemplateRef} from "vue";
 const lyricsStore = useLyrics();
 const fileName = ref('Choose image');
 const fileRef = useTemplateRef('fileRef');
-const hasFile = ref(false);
 
 const {fontSize, textAlign, positionX,
   positionY, textBoxWidth,
-  textBoxHeight, isBgImg, bgColor, textColor} = toRefs(lyricsStore.settings);
+  textBoxHeight, isBgImg, bgColor, textColor, bgImg} = toRefs(lyricsStore.settings);
 
-// TODO input file에 이미지 캔버스 배경에 표시하기
 function onImageSelected(e){
-  fileName.value = e.target.files[0].name;
-  hasFile.value = true;
+  const file = e.target.files?.[0];
+  if(!file) return;
+  fileName.value = file.name;
+  bgImg.value = file;
 }
 
 function clearImage(){
-  hasFile.value = false;
   fileName.value = 'Choose image';
   fileRef.value.value = '';
+  bgImg.value = null;
 }
 
 </script>

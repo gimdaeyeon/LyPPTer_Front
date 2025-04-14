@@ -23,7 +23,7 @@
 import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
 import {onMounted, onUnmounted, toRefs, useTemplateRef, watch} from "vue";
-import {Canvas, Textbox} from "fabric";
+import {Canvas, Textbox,Image} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
@@ -36,7 +36,7 @@ const {lyrics,currentLyrics} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
-  canvasWidth, canvasHeight,
+  canvasWidth, canvasHeight,bgImg,
 } = toRefs(lyricsStore.settings);
 
 
@@ -103,6 +103,43 @@ onMounted(() => {
   watch(bgColor, (newColor) => {
     fabricCanvas.set('backgroundColor', newColor);
     fabricCanvas.renderAll();
+  });
+
+  watch(bgImg,(newImg)=>{
+    if(!newImg) {
+      fabricCanvas.set('backgroundImage',null);
+      fabricCanvas.requestRenderAll();
+      return;
+    }
+     const reader = new FileReader();
+     reader.onload = function (){
+       const base64 = reader.result;
+       Image.fromURL(base64).then(function (img){
+         const canvasWidth = fabricCanvas.getWidth();
+         const canvasHeight = fabricCanvas.getHeight();
+
+         const scaleX = canvasWidth / img.width;
+         const scaleY = canvasHeight / img.height;
+
+         const scale = Math.max(scaleX, scaleY); // ✅ 비율 유지하며 최대한 맞춤
+
+         img.scale(scale);
+
+         // 중앙 정렬
+         img.set({
+           left: (canvasWidth - img.getScaledWidth()) / 2,
+           top: (canvasHeight - img.getScaledHeight()) / 2,
+           originX: 'left',
+           originY: 'top'
+         });
+
+
+       // 배경으로 설정
+         fabricCanvas.set('backgroundImage',img);
+         fabricCanvas.requestRenderAll();
+       });
+     }
+     reader.readAsDataURL(newImg);
   });
 
   window.addEventListener('resize', resizeCanvas);
