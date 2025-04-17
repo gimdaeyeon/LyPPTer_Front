@@ -20,14 +20,14 @@
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {computed, toRefs} from "vue";
-import {StaticCanvas, Textbox} from "fabric";
+import {FabricImage, StaticCanvas, Textbox,} from "fabric";
 
 const lyricsStore = useLyrics();
-const {lyricsSlides, currentSlideIdx} = storeToRefs(lyricsStore);
+const {lyricsSlides, currentSlideIdx, bgDataUrl} = storeToRefs(lyricsStore);
 const {
   fontSize, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY, textAlign,
-    canvasWidth,canvasHeight,
+  canvasWidth, canvasHeight,
 } = toRefs(lyricsStore.settings);
 
 // TODO watch를 사용한 방법 고려
@@ -41,6 +41,26 @@ const previews = computed(() => {
       backgroundColor: bgColor.value,
     });
 
+    if (bgDataUrl.value) {
+      FabricImage.fromURL(bgDataUrl.value)
+          .then(img => {
+            const scaleX = canvasWidth.value / img.width;
+            const scaleY = canvasHeight.value / img.height;
+            const scale = Math.max(scaleX, scaleY);
+
+            img.scale(scale);
+            img.set({
+              left: (canvasWidth.value - img.getScaledWidth()) / 2,
+              top: (canvasHeight.value - img.getScaledHeight()) / 2,
+              originX: 'left',
+              originY: 'top'
+            });
+
+            previewCanvas.set('backgroundImage', img);
+            previewCanvas.requestRenderAll();
+          });
+    }
+
     // TODO Preview로 보여줄시 캔버스 크기와, 가사 크기 조절 필요(작아서 잘 안보임)
     const textBox = new Textbox(text, {
       width: textBoxWidth.value,
@@ -48,7 +68,7 @@ const previews = computed(() => {
       left: positionX.value,
       top: positionY.value,
       fontSize: fontSize.value,
-      fill:textColor.value,
+      fill: textColor.value,
       textAlign: textAlign.value,
     });
 

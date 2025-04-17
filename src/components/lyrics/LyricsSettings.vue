@@ -52,7 +52,7 @@
             <i class="fa-solid fa-upload shrink-0"></i>
             <span class="truncate">{{fileName}}</span>
           </label>
-          <button v-if="bgImg" @click="clearImage" class="icon-btn text-sm">
+          <button v-if="bgDataUrl" @click="clearImage" class="icon-btn text-sm">
             <i class="pi pi-times text-red-400" ></i>
           </button>
         </template>
@@ -71,26 +71,28 @@ import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
 import LabeledInput from "@/components/ui/LabeledInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {ref, toRefs, useTemplateRef} from "vue";
+import {storeToRefs} from "pinia";
 
 const lyricsStore = useLyrics();
 const fileName = ref('Choose image');
 const fileRef = useTemplateRef('fileRef');
+const {bgDataUrl} = storeToRefs(lyricsStore);
 
 const {fontSize, textAlign, positionX,
   positionY, textBoxWidth,
-  textBoxHeight, isBgImg, bgColor, textColor, bgImg} = toRefs(lyricsStore.settings);
+  textBoxHeight, isBgImg, bgColor, textColor,} = toRefs(lyricsStore.settings);
 
 function onImageSelected(e){
   const file = e.target.files?.[0];
   if(!file) return;
   fileName.value = file.name;
-  bgImg.value = file;
+  lyricsStore.setBgFile(file);
 }
 
 function clearImage(){
   fileName.value = 'Choose image';
   fileRef.value.value = '';
-  bgImg.value = null;
+  lyricsStore.setBgFile(null);
 }
 
 </script>

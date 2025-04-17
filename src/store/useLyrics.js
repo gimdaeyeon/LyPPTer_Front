@@ -15,11 +15,19 @@ export const useLyrics = defineStore('lyrics', () => {
         textBoxWidth: 400,
         textBoxHeight: 50,
         isBgImg: false,
-        bgImg: null,
         bgColor: '#000000',
         canvasWidth:0,
         canvasHeight:0,
     });
+
+    const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일
+    const bgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
+
+    // 배경 이미지 설정(선택창에서 file 받아 처리)
+    async function setBgFile(file){
+        bgFile.value = file;
+        bgDataUrl.value = file?await fileToBase64(file) : null;
+    }
 
     const currentLyrics = computed(()=>{
         const lines = lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim());
@@ -32,30 +40,17 @@ export const useLyrics = defineStore('lyrics', () => {
         lyrics.value = newLyrics.replace(/(?:\r?\n){2,}/g, '\n\n');
     });
 
+    function fileToBase64(file) {
+        return new Promise(resolve=>{
+            const reader = new FileReader();
+            reader.onload = ()=>resolve(reader.result);
+            reader.readAsDataURL(file);
+        })
+    }
 
-    // 가사를 분할하여 슬라이드 생성
-    // function generateSlides() {
-    //     const lines = lyrics.value.split(/(?:\r?\n){2,}/).map(line => line.trim())
-    //         .filter(line => line !== "");
-    //
-    //     // 현재 슬라이드 개수와 비교하여 추가/삭제
-    //     while (slides.length < lines.length) {
-    //         slides.push({text: "", canvas: null});
-    //     }
-    //     while (slides.length > lines.length) {
-    //         slides.pop()
-    //     }
-    //
-    //     slides.forEach((slide, index) => {
-    //         slide.text = lines[index];
-    //     });
-    //
-    // }
-    // // lyrics 값이 변경 될 때 슬라이드 자동 생성
-    // watch(lyrics, generateSlides);
 
     return {
         lyrics, currentSlideIdx, settings, currentLyrics,
-        lyricsSlides,
+        lyricsSlides,bgFile,bgDataUrl,setBgFile,
     }
 });
