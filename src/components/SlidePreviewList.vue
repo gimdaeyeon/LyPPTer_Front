@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import {useLyrics} from "@/store/useLyrics.js";
-import {storeToRefs} from "pinia";
-import {computed, toRefs} from "vue";
-import {FabricImage, StaticCanvas, Textbox,} from "fabric";
+import {ref, toRefs, watch} from 'vue';
+import {useLyrics} from '@/store/useLyrics.js';
+import {storeToRefs} from 'pinia';
+import {FabricImage, StaticCanvas, Textbox} from 'fabric';
 
 const lyricsStore = useLyrics();
 const {lyricsSlides, currentSlideIdx, bgDataUrl} = storeToRefs(lyricsStore);
@@ -30,38 +30,55 @@ const {
   canvasWidth, canvasHeight,
 } = toRefs(lyricsStore.settings);
 
-// TODO watch를 사용한 방법 고려
-const previews = computed(() => {
-  const images = [];
+const previews = ref([]); // ✅ 이미지 목록
+
+watch([
+  lyricsSlides, bgDataUrl,
+  fontSize, textBoxWidth, textBoxHeight,
+  textColor, bgColor, positionX, positionY, textAlign,
+  canvasWidth, canvasHeight
+], generatePreviews,);
+
+let cachedImageElement = null; //HTMLImageElement
+let cachedImageUrl = null;
+
+async function generatePreviews() {
+  previews.value = []; // 초기화
+
+  // 배경 이미지 로딩은 1회만 실행
+  if (bgDataUrl.value && bgDataUrl.value !== cachedImageUrl) {
+    cachedImageElement = await loadImageElement(bgDataUrl.value);
+    cachedImageUrl = bgDataUrl.value;
+  }
+
 
   for (const text of lyricsSlides.value) {
-    const previewCanvas = new StaticCanvas(null, {
+    const canvas = new StaticCanvas(null, {
       width: canvasWidth.value,
       height: canvasHeight.value,
       backgroundColor: bgColor.value,
     });
 
-    if (bgDataUrl.value) {
-      FabricImage.fromURL(bgDataUrl.value)
-          .then(img => {
-            const scaleX = canvasWidth.value / img.width;
-            const scaleY = canvasHeight.value / img.height;
-            const scale = Math.max(scaleX, scaleY);
+    // FabricImage를 슬라이드별로 새로 생성
+    if (cachedImageElement) {
+      const img = new FabricImage(cachedImageElement);
+      const scale = Math.max(
+          canvasWidth.value / img.width,
+          canvasHeight.value / img.height
+      );
 
-            img.scale(scale);
-            img.set({
-              left: (canvasWidth.value - img.getScaledWidth()) / 2,
-              top: (canvasHeight.value - img.getScaledHeight()) / 2,
-              originX: 'left',
-              originY: 'top'
-            });
+      img.scale(scale);
+      img.set({
+        left: (canvasWidth.value - img.getScaledWidth()) / 2,
+        top: (canvasHeight.value - img.getScaledHeight()) / 2,
+        originX: 'left',
+        originY: 'top'
+      });
 
-            previewCanvas.set('backgroundImage', img);
-            previewCanvas.requestRenderAll();
-          });
+      canvas.set('backgroundImage', img);
     }
 
-    // TODO Preview로 보여줄시 캔버스 크기와, 가사 크기 조절 필요(작아서 잘 안보임)
+    // ✅ 가사 텍스트 박스 추가
     const textBox = new Textbox(text, {
       width: textBoxWidth.value,
       height: textBoxHeight.value,
@@ -72,14 +89,23 @@ const previews = computed(() => {
       textAlign: textAlign.value,
     });
 
-    previewCanvas.add(textBox);
-    previewCanvas.renderAll();
+    canvas.add(textBox);
+    canvas.renderAll();
 
-    images.push(previewCanvas.toDataURL());
+    // ✅ 미리보기 이미지 추가
+    previews.value.push(canvas.toDataURL({multiplier:0.25}));
   }
-  return images;
-});
+}
 
+// 이미지 요소 직접 생성
+function loadImageElement(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
 
 </script>
 
