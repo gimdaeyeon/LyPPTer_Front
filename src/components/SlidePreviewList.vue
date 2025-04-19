@@ -21,13 +21,14 @@ import {ref, toRefs, watch} from 'vue';
 import {useLyrics} from '@/store/useLyrics.js';
 import {storeToRefs} from 'pinia';
 import {FabricImage, StaticCanvas, Textbox} from 'fabric';
+import {loadImageElement} from "@/util/imageUtils.js";
 
 const lyricsStore = useLyrics();
 const {lyricsSlides, currentSlideIdx, bgDataUrl} = storeToRefs(lyricsStore);
 const {
   fontSize, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY, textAlign,
-  canvasWidth, canvasHeight,
+  canvasWidth, canvasHeight,isBgImg,
 } = toRefs(lyricsStore.settings);
 
 const previews = ref([]); // ✅ 이미지 목록
@@ -36,7 +37,7 @@ watch([
   lyricsSlides, bgDataUrl,
   fontSize, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY, textAlign,
-  canvasWidth, canvasHeight
+  canvasWidth, canvasHeight,isBgImg,
 ], generatePreviews,);
 
 let cachedImageElement = null; //HTMLImageElement
@@ -51,7 +52,6 @@ async function generatePreviews() {
     cachedImageUrl = bgDataUrl.value;
   }
 
-
   for (const text of lyricsSlides.value) {
     const canvas = new StaticCanvas(null, {
       width: canvasWidth.value,
@@ -60,7 +60,7 @@ async function generatePreviews() {
     });
 
     // FabricImage를 슬라이드별로 새로 생성
-    if (cachedImageElement) {
+    if (isBgImg.value && bgDataUrl.value && cachedImageElement) {
       const img = new FabricImage(cachedImageElement);
       const scale = Math.max(
           canvasWidth.value / img.width,
@@ -98,14 +98,7 @@ async function generatePreviews() {
 }
 
 // 이미지 요소 직접 생성
-function loadImageElement(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
-}
+
 
 </script>
 

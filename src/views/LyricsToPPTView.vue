@@ -28,6 +28,7 @@ import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {useFabricBinding} from "@/composables/useFabricBinding.js";
+import {loadImageElement} from "@/util/imageUtils.js";
 
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
@@ -36,7 +37,7 @@ const {lyrics, currentLyrics, bgDataUrl} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
-  canvasWidth, canvasHeight,
+  canvasWidth, canvasHeight, isBgImg,
 } = toRefs(lyricsStore.settings);
 
 
@@ -105,38 +106,61 @@ onMounted(() => {
     fabricCanvas.renderAll();
   });
 
-  // TODO 각 슬라이드 미리보기에 배경이미지 적용하기
-  watch(bgDataUrl, (newImg) => {
-    if (!newImg) {
+  watch(isBgImg, async (newValue) => {
+    let img = null;
+
+    if(newValue && bgDataUrl.value){
+      const imgElement = await loadImageElement(bgDataUrl.value);
+      const canvasWidth = fabricCanvas.getWidth();
+      const canvasHeight = fabricCanvas.getHeight();
+
+      img = new FabricImage(imgElement);
+      const scale = Math.max(
+          canvasWidth / img.width,
+          canvasHeight / img.height
+      );
+
+      img.scale(scale);
+      img.set({
+        left: (canvasWidth - img.getScaledWidth()) / 2,
+        top: (canvasHeight - img.getScaledHeight()) / 2,
+        originX: 'left',
+        originY: 'top'
+      });
+
+    }
+    fabricCanvas.set('backgroundImage', img);
+    fabricCanvas.requestRenderAll();
+  });
+
+  watch(bgDataUrl, async (newImg) => {
+    if (!isBgImg.value || !newImg) {
       fabricCanvas.set('backgroundImage', null);
       fabricCanvas.requestRenderAll();
       return;
     }
 
-    FabricImage.fromURL(bgDataUrl.value)
-        .then(img => {
-          const canvasWidth = fabricCanvas.getWidth();
-          const canvasHeight = fabricCanvas.getHeight();
+    const imgElement = await loadImageElement(newImg);
+    const canvasWidth = fabricCanvas.getWidth();
+    const canvasHeight = fabricCanvas.getHeight();
 
-          const scaleX = canvasWidth / img.width;
-          const scaleY = canvasHeight / img.height;
+    const img = new FabricImage(imgElement);
+    const scale = Math.max(
+        canvasWidth / img.width,
+        canvasHeight / img.height
+    );
 
-          const scale = Math.max(scaleX, scaleY);
+    img.scale(scale);
+    img.set({
+      left: (canvasWidth - img.getScaledWidth()) / 2,
+      top: (canvasHeight - img.getScaledHeight()) / 2,
+      originX: 'left',
+      originY: 'top'
+    });
 
-          img.scale(scale);
+    fabricCanvas.set('backgroundImage', img);
+    fabricCanvas.requestRenderAll();
 
-          // 중앙 정렬
-          img.set({
-            left: (canvasWidth - img.getScaledWidth()) / 2,
-            top: (canvasHeight - img.getScaledHeight()) / 2,
-            originX: 'left',
-            originY: 'top'
-          });
-
-          // 배경으로 설정
-          fabricCanvas.set('backgroundImage', img);
-          fabricCanvas.requestRenderAll();
-        });
   });
 
   window.addEventListener('resize', resizeCanvas);
