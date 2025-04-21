@@ -28,7 +28,7 @@ import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {useFabricBinding} from "@/composables/useFabricBinding.js";
-import {loadImageElement} from "@/util/imageUtils.js";
+import {getFabricImage, loadImageElement} from "@/util/imageUtils.js";
 
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
@@ -110,24 +110,7 @@ onMounted(() => {
     let img = null;
 
     if(newValue && bgDataUrl.value){
-      const imgElement = await loadImageElement(bgDataUrl.value);
-      const canvasWidth = fabricCanvas.getWidth();
-      const canvasHeight = fabricCanvas.getHeight();
-
-      img = new FabricImage(imgElement);
-      const scale = Math.max(
-          canvasWidth / img.width,
-          canvasHeight / img.height
-      );
-
-      img.scale(scale);
-      img.set({
-        left: (canvasWidth - img.getScaledWidth()) / 2,
-        top: (canvasHeight - img.getScaledHeight()) / 2,
-        originX: 'left',
-        originY: 'top'
-      });
-
+      img = await getFabricImage(bgDataUrl.value,fabricCanvas.getWidth(),fabricCanvas.getHeight());
     }
     fabricCanvas.set('backgroundImage', img);
     fabricCanvas.requestRenderAll();
@@ -140,23 +123,7 @@ onMounted(() => {
       return;
     }
 
-    const imgElement = await loadImageElement(newImg);
-    const canvasWidth = fabricCanvas.getWidth();
-    const canvasHeight = fabricCanvas.getHeight();
-
-    const img = new FabricImage(imgElement);
-    const scale = Math.max(
-        canvasWidth / img.width,
-        canvasHeight / img.height
-    );
-
-    img.scale(scale);
-    img.set({
-      left: (canvasWidth - img.getScaledWidth()) / 2,
-      top: (canvasHeight - img.getScaledHeight()) / 2,
-      originX: 'left',
-      originY: 'top'
-    });
+    const img = await getFabricImage(newImg,fabricCanvas.getWidth(),fabricCanvas.getHeight());
 
     fabricCanvas.set('backgroundImage', img);
     fabricCanvas.requestRenderAll();

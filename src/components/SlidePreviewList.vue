@@ -2,7 +2,6 @@
   <div class="overflow-hidden flex-[20_1_0]">
     <div class="h-full border-r border-gray-200">
       <div class="space-y-2 p-2 max-h-[72vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden">
-
         <div v-for="(preview,i) in previews" class="slide-item-box"
              :class="{'border-primary':i===currentSlideIdx}"
              @click="currentSlideIdx=i"

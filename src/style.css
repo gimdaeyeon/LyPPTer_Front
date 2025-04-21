@@ -1,13 +1,10 @@
 @import "tailwindcss";
 
-@config "../tailwind.config.js";
-
-:root {
-    --main-color: #00AB6B;
-    --main-hover-color: #009960;
-    --sub-color: #B88746;
-    --border-color: rgb(233 223 206);
+@theme{
+    --color-primary: #00AB6B;
+    --color-secondary: #B88746;
 }
+
 
 body {
     -ms-overflow-style: none;
@@ -46,17 +43,18 @@ body::-webkit-scrollbar {
     @apply flex h-10 w-full rounded-md border border-gray-200 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50;
 }
 
-.icon-btn{
+.icon-btn {
     @apply size-10 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors min-h-10 min-w-10;
 }
 
-.labeled-input-label{
+.labeled-input-label {
     @apply font-semibold absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-500;
 }
 
 /* color input 스타일 */
 .color-input {
-    @apply w-10 h-10 border border-gray-200 rounded-lg flex-shrink-0; /* 정사각형 유지 */
+    @apply w-10 h-10 border border-gray-200 rounded-lg flex-shrink-0;
+    /* 정사각형 유지 */
 }
 
 .color-input::-webkit-color-swatch {
