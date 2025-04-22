@@ -88,6 +88,14 @@ async function generatePreviews() {
       textAlign: textAlign.value,
     });
 
+    textBox.setPositionByOrigin(
+        {x:canvas.getWidth()/2,y:canvas.getHeight()*0.2},
+        'center',
+        'center'
+    );
+
+    textBox.setCoords();
+
     canvas.add(textBox);
     canvas.renderAll();
 

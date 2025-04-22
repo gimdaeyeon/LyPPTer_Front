@@ -23,12 +23,12 @@
 import LyricsArea from "@/components/lyrics/LyricsEditor.vue";
 import SlidePreviewList from "@/components/SlidePreviewList.vue";
 import {onMounted, onUnmounted, toRefs, useTemplateRef, watch} from "vue";
-import {Canvas, FabricImage, Textbox} from "fabric";
+import {Canvas, Textbox} from "fabric";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {useFabricBinding} from "@/composables/useFabricBinding.js";
-import {getFabricImage, loadImageElement} from "@/util/imageUtils.js";
+import {getFabricImage} from "@/util/imageUtils.js";
 
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
@@ -68,24 +68,34 @@ onMounted(() => {
   const text = new Textbox(lyrics.value, {
     width: textBoxWidth.value,
     height: textBoxHeight.value,
-    left: positionX.value,
-    top: positionY.value,
     fontSize: fontSize.value,
-    selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
-    lockScalingX: false, // x축 크기 조절 가능
-    lockScalingY: false, // y축 크기 조절 가능
     textAlign: textAlign.value,
+    fill: textColor.value,
     padding: 10,
     borderColor: '#00AB6B',
     borderDashArray: [6],
     cornerColor: '#00AB6B',
     cornerSize: 10,
-    fill: textColor.value,
+    selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
+    lockScalingX: false, // x축 크기 조절 가능
+    lockScalingY: false, // y축 크기 조절 가능
+    // left: positionX.value,
+    // top: positionY.value,
   });
 
   text.setControlVisible("mtr", false); // 회전 핸들 숨기기
   text.setControlVisible("mt", false);
   text.setControlVisible("mb", false);
+
+  positionX.value =fabricCanvas.getWidth()/2;
+  positionY.value = fabricCanvas.getHeight()*0.2;
+
+  text.setPositionByOrigin(
+      {x: positionX.value,y:positionY.value},
+'center',
+'center'
+  );
+  text.setCoords(); // 위치 업데이트
 
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
@@ -161,6 +171,18 @@ onMounted(() => {
           left: (width - bgImg.getScaledWidth()) / 2,
           top: (height - bgImg.getScaledHeight()) / 2,
         });
+      }
+
+      const textBox = fabricCanvas.getObjects().find(obj=>obj instanceof Textbox);
+      if(textBox){
+        // positionX.value = width/2;
+        // positionY.value = height*0.2;
+        textBox.setPositionByOrigin(
+            {x:width/2,y:height*0.2},
+            'center',
+            'center'
+        );
+        textBox.setCoords();
       }
 
       fabricCanvas.renderAll();

@@ -9,7 +9,7 @@ export function loadImageElement(src) {
     });
 }
 
-export async function getFabricImage(imgDataUrl, canvasWidth, canvasHeight){
+export async function getFabricImage(imgDataUrl, canvasWidth, canvasHeight){ 
     const imgElement = await loadImageElement(imgDataUrl);
     const fabricImage = new FabricImage(imgElement);
     const scale = Math.max(

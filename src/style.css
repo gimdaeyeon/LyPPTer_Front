@@ -20,7 +20,7 @@ body::-webkit-scrollbar {
 }
 
 .slide-item-box {
-    @apply relative aspect-[16/9] cursor-pointer overflow-hidden rounded-md border-2;
+    @apply relative aspect-[16/9] cursor-pointer overflow-hidden rounded-md border-3;
 }
 
 .slide-number {
