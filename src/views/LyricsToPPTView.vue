@@ -76,7 +76,8 @@ onMounted(() => {
     borderDashArray: [6],
     cornerColor: '#00AB6B',
     cornerSize: 10,
-    selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
+    // selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
+    selectable: false,
     lockScalingX: false, // x축 크기 조절 가능
     lockScalingY: false, // y축 크기 조절 가능
     // left: positionX.value,
@@ -107,8 +108,16 @@ onMounted(() => {
     width: textBoxWidth,
     height: textBoxHeight,
     fill: textColor,
-    left: positionX,
-    top: positionY,
+  });
+
+  watch([positionX,positionY],([x,y])=>{
+    text.setPositionByOrigin(
+        {x,y},
+        'center',
+        'center'
+    );
+    text.setCoords();
+    fabricCanvas.requestRenderAll();
   });
 
   watch(bgColor, (newColor) => {
@@ -175,8 +184,8 @@ onMounted(() => {
 
       const textBox = fabricCanvas.getObjects().find(obj=>obj instanceof Textbox);
       if(textBox){
-        // positionX.value = width/2;
-        // positionY.value = height*0.2;
+        positionX.value = width/2;
+        positionY.value = height*0.2;
         textBox.setPositionByOrigin(
             {x:width/2,y:height*0.2},
             'center',
@@ -188,7 +197,6 @@ onMounted(() => {
       fabricCanvas.renderAll();
     }
   }
-
 });
 
 

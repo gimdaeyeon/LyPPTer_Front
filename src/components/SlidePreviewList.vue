@@ -89,7 +89,8 @@ async function generatePreviews() {
     });
 
     textBox.setPositionByOrigin(
-        {x:canvas.getWidth()/2,y:canvas.getHeight()*0.2},
+        // {x:canvas.getWidth()/2,y:canvas.getHeight()*0.2},
+        {x:positionX.value,y:positionY.value},
         'center',
         'center'
     );
@@ -103,9 +104,6 @@ async function generatePreviews() {
     previews.value.push(canvas.toDataURL({multiplier:0.25}));
   }
 }
-
-// 이미지 요소 직접 생성
-
 
 </script>
 
