@@ -34,10 +34,10 @@
         <label class="text-sm font-medium">Background</label>
         <div>
           <button class="icon-btn" :class="{selected:!isBgImg}" @click="isBgImg=false">
-            <i class="fa-solid fa-palette"></i>
+            <font-awesome-icon :icon="['fas', 'palette']" />
           </button>
           <button class="icon-btn" :class="{selected:isBgImg}" @click="isBgImg=true">
-            <i class="fa-regular fa-image"></i>
+            <font-awesome-icon :icon="['far', 'image']" />
           </button>
         </div>
       </div>
@@ -49,11 +49,11 @@
           <label for="bg-img"
                  class="input justify-center items-center gap-2 cursor-pointer
                  hover:bg-gray-100 font-semibold px-4">
-            <i class="fa-solid fa-upload shrink-0"></i>
+            <font-awesome-icon :icon="['fas', 'upload']" />
             <span class="truncate">{{fileName}}</span>
           </label>
           <button v-if="bgDataUrl" @click="clearImage" class="icon-btn text-sm">
-            <i class="pi pi-times text-red-400" ></i>
+            <font-awesome-icon :icon="['fas', 'x']" />
           </button>
         </template>
         <template v-else>
@@ -72,6 +72,7 @@ import LabeledInput from "@/components/ui/LabeledInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {ref, toRefs, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const lyricsStore = useLyrics();
 const fileName = ref('Choose image');
@@ -102,7 +103,7 @@ function clearImage(){
   background-color: #E5F6F0;
 }
 
-.selected > i {
+.selected > svg {
   color: #00AB6B;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <button class="icon-btn border border-gray-200">
-      <i :class="`fa-solid fa-align-${align}`"></i>
+    <font-awesome-icon :icon="['fas', `fa-align-${align}`]" />
   </button>
 </template>
 
