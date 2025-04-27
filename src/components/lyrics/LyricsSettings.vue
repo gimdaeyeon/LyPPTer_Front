@@ -104,6 +104,6 @@ function clearImage(){
 }
 
 .selected > svg {
-  color: #00AB6B;
+  color: var(--color-primary);
 }
 </style>

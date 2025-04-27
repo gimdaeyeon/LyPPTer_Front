@@ -19,7 +19,7 @@ const aligns = ['left', 'center', 'right', 'justify',]
 
 <style scoped>
 .selected {
-  background-color: #00AB6B;
+  background-color: var(--color-primary);
   color: white;
 }
 

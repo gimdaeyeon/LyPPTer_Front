@@ -4,7 +4,7 @@
         <TextArea ref="textarea" @keyup="setCurrentSlide" @click="setCurrentSlide"
             placeholder="Type or paste lyrics here..."
             class="text-area form-input flex w-full min-w-0 flex-1 resize-none overflow-y-scroll rounded-xl focus:outline-0 border
-            border-gray-200 h-full min-h-36 placeholder:text-[#B88746] p-[15px] text-base font-normal leading-normal"
+            border-gray-200 h-full min-h-36 placeholder:text-secondary p-[15px] text-base font-normal leading-normal"
             v-model="lyrics"
         />
     </label>

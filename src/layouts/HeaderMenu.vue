@@ -11,7 +11,7 @@
         <router-link v-for="menu in menus" class="h-menu-item" :to="menu.link">{{menu.label}}</router-link>
       </div>
       <div class="flex gap-2">
-        <button
+        <button @click="createPPtTest"
             class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-primary hover:bg-[#009960] text-white text-sm font-bold leading-normal tracking-[0.015em]"
         >
           <span class="truncate">Export</span>
@@ -28,6 +28,7 @@
 <script setup>
 
 import {ref} from "vue";
+import {createPPtTest} from "@/services/pptservice.js";
 
 const menus = ref([
   {label: 'Home',link:'#'},

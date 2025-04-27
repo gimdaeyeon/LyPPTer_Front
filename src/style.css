@@ -28,11 +28,11 @@ body::-webkit-scrollbar {
 }
 
 .lyrics-mode-tab {
-    @apply flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#B88746] pb-[13px] pt-4 cursor-pointer;
+    @apply flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-secondary pb-[13px] pt-4 cursor-pointer;
 }
 
 .mode-on {
-    @apply border-b-[#00AB6B] text-[#1C160C];
+    @apply border-b-primary text-[#1C160C];
 }
 
 .mode-text {
