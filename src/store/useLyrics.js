@@ -30,8 +30,7 @@ export const useLyrics = defineStore('lyrics', () => {
     }
 
     const currentLyrics = computed(()=>{
-        const lines = lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim());
-        return lines[currentSlideIdx.value];
+        return lyricsSlides.value[currentSlideIdx.value];
     });
 
     const lyricsSlides = computed(()=> lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim()));

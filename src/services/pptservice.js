@@ -6,27 +6,30 @@ import {toRefs} from "vue";
 export function createPPt() {
     const lyricsStore = useLyrics();
     const {lyricsSlides} = storeToRefs(lyricsStore);
-    // const {
-    //     fontSize, textBoxWidth, textBoxHeight,
-    //     textColor, bgColor, positionX, positionY, textAlign,
-    //     canvasWidth, canvasHeight,isBgImg,
-    // } = toRefs(lyricsStore.settings);
+    const {
+        fontSize, textBoxWidth, textBoxHeight,
+        textColor, bgColor, positionX, positionY, textAlign,
+        canvasWidth, canvasHeight, isBgImg,
+    } = toRefs(lyricsStore.settings);
 
     // 1. Create a Presentation
     const pres = new PptxGenJS;
+    pres.defineSlideMaster({
+        title: 'LYRICS_BG',
+        background: {color: bgColor.value},
+    });
 
-    lyricsSlides.value.forEach(lyrics=>{
-        const slide = pres.addSlide();
+    lyricsSlides.value.forEach(lyrics => {
+        const slide = pres.addSlide({masterName: 'LYRICS_BG'});
 
-        slide.addText(lyrics,{
-            x:1.5,
-            y:1.5,
-            color:"363636",
-            fill:{color:'#F1F1F1'},
-            align: pres.AlignH.center,
+        slide.addText(lyrics, {
+            x: 1.5,
+            y: 1.5,
+            color: textColor.value,
+            align: textAlign.value,
         });
     })
 
 //     4. Save the Presentation
-    pres.writeFile({fileName:'Smple.pptx'});
+    pres.writeFile({fileName: 'Sample.pptx'});
 }
