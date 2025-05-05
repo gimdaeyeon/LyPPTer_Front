@@ -7,7 +7,7 @@
           <div>
             <CustomInput class="flex h-10 w-full rounded-md border border-input border-gray-200 bg-background px-3
             py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-1 disabled:cursor-not-allowed
-            disabled:opacity-50 text-lg mb-4" placeholder="Enter presentation title" type="text"/>
+            disabled:opacity-50 text-lg mb-4" v-model="title" placeholder="Enter presentation title" type="text"/>
             <div ref="canvasContainer" class="aspect-video relative overflow-hidden rounded-lg border border-gray-200">
               <canvas ref="canvas"></canvas>
             </div>
@@ -33,13 +33,12 @@ import {getFabricImage} from "@/util/imageUtils.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, currentLyrics, bgDataUrl} = storeToRefs(lyricsStore);
+const {lyrics, currentLyrics, bgDataUrl, title} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
   canvasWidth, canvasHeight, isBgImg,
 } = toRefs(lyricsStore.settings);
-
 
 onMounted(() => {
 
@@ -82,6 +81,8 @@ onMounted(() => {
     lockScalingY: false, // y축 크기 조절 가능
     // left: positionX.value,
     // top: positionY.value,
+    fontWeight: 'bold',
+    // fontFamily: 'Calibri',
   });
 
   text.setControlVisible("mtr", false); // 회전 핸들 숨기기

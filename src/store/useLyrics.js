@@ -4,6 +4,7 @@ import {computed, reactive, ref, watch} from "vue";
 export const useLyrics = defineStore('lyrics', () => {
     const currentSlideIdx = ref(0); // 현재 활성 슬라이드 인덱스
     const lyrics = ref('가사를 입력하세요'); // 사용자가 입력한 전체 가사
+    const title = ref('')
 
     // 슬라이드 옵션
     const settings = reactive({
@@ -49,7 +50,7 @@ export const useLyrics = defineStore('lyrics', () => {
 
 
     return {
-        lyrics, currentSlideIdx, settings, currentLyrics,
+        title, lyrics, currentSlideIdx, settings, currentLyrics,
         lyricsSlides,bgFile,bgDataUrl,setBgFile,
     }
 });
