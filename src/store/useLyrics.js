@@ -19,6 +19,7 @@ export const useLyrics = defineStore('lyrics', () => {
         bgColor: '#000000',
         canvasWidth:0,
         canvasHeight:0,
+        isTextBold: false,
     });
 
     const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일
@@ -40,6 +41,8 @@ export const useLyrics = defineStore('lyrics', () => {
         lyrics.value = newLyrics.replace(/(?:\r?\n){2,}/g, '\n\n');
     });
 
+    const textBold = computed(()=>settings.isTextBold?'bold':'normal');
+
     function fileToBase64(file) {
         return new Promise(resolve=>{
             const reader = new FileReader();
@@ -51,6 +54,6 @@ export const useLyrics = defineStore('lyrics', () => {
 
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,
-        lyricsSlides,bgFile,bgDataUrl,setBgFile,
+        lyricsSlides,bgFile,bgDataUrl,setBgFile,textBold,
     }
 });

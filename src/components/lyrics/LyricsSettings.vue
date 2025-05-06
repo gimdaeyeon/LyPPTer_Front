@@ -13,7 +13,7 @@
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Text Formatting</label>
-      <TextAlignSelector v-model="textAlign"/>
+      <TextAlignSelector v-model="textAlign" v-model:isTextBold="isTextBold" />
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Position</label>
@@ -34,10 +34,10 @@
         <label class="text-sm font-medium">Background</label>
         <div>
           <button class="icon-btn" :class="{selected:!isBgImg}" @click="isBgImg=false">
-            <font-awesome-icon :icon="['fas', 'palette']" />
+            <font-awesome-icon :icon="['fas', 'palette']"/>
           </button>
           <button class="icon-btn" :class="{selected:isBgImg}" @click="isBgImg=true">
-            <font-awesome-icon :icon="['far', 'image']" />
+            <font-awesome-icon :icon="['far', 'image']"/>
           </button>
         </div>
       </div>
@@ -49,11 +49,11 @@
           <label for="bg-img"
                  class="input justify-center items-center gap-2 cursor-pointer
                  hover:bg-gray-100 font-semibold px-4">
-            <font-awesome-icon :icon="['fas', 'upload']" />
-            <span class="truncate">{{fileName}}</span>
+            <font-awesome-icon :icon="['fas', 'upload']"/>
+            <span class="truncate">{{ fileName }}</span>
           </label>
           <button v-if="bgDataUrl" @click="clearImage" class="icon-btn text-sm">
-            <font-awesome-icon :icon="['fas', 'x']" />
+            <font-awesome-icon :icon="['fas', 'x']"/>
           </button>
         </template>
         <template v-else>
@@ -79,18 +79,21 @@ const fileName = ref('Choose image');
 const fileRef = useTemplateRef('fileRef');
 const {bgDataUrl} = storeToRefs(lyricsStore);
 
-const {fontSize, textAlign, positionX,
+const {
+  fontSize, textAlign, positionX,
   positionY, textBoxWidth,
-  textBoxHeight, isBgImg, bgColor, textColor,} = toRefs(lyricsStore.settings);
+  textBoxHeight, isBgImg, bgColor, textColor,
+  isTextBold,
+} = toRefs(lyricsStore.settings);
 
-function onImageSelected(e){
+function onImageSelected(e) {
   const file = e.target.files?.[0];
-  if(!file) return;
+  if (!file) return;
   fileName.value = file.name;
   lyricsStore.setBgFile(file);
 }
 
-function clearImage(){
+function clearImage() {
   fileName.value = 'Choose image';
   fileRef.value.value = '';
   lyricsStore.setBgFile(null);

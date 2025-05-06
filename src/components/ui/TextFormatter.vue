@@ -5,7 +5,12 @@
                      @click="model=align"
       />
     </template>
-
+    <button class="icon-btn border border-gray-200 ml-2"
+            :class="{'selected': isTextBold}"
+            @click="isTextBold = !isTextBold"
+    >
+      <font-awesome-icon :icon="['fas', `fa-bold`]" />
+    </button>
   </div>
 </template>
 
@@ -13,6 +18,7 @@
 import TextAlignItem from "@/components/ui/TextAlignItem.vue";
 
 const model = defineModel();
+const isTextBold = defineModel('isTextBold');
 const aligns = [
     'left', 'center', 'right',
   // 'justify', // pptxGenJs에는 해당 속성이 존재하지 않음

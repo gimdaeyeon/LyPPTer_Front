@@ -33,11 +33,11 @@ import {getFabricImage} from "@/util/imageUtils.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, currentLyrics, bgDataUrl, title} = storeToRefs(lyricsStore);
+const {lyrics, currentLyrics, bgDataUrl, title, textBold,} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
-  canvasWidth, canvasHeight, isBgImg,
+  canvasWidth, canvasHeight, isBgImg,isTextBold,
 } = toRefs(lyricsStore.settings);
 
 onMounted(() => {
@@ -81,7 +81,7 @@ onMounted(() => {
     lockScalingY: false, // y축 크기 조절 가능
     // left: positionX.value,
     // top: positionY.value,
-    fontWeight: 'bold',
+    fontWeight: textBold.value,
     // fontFamily: 'Calibri',
   });
 
@@ -109,6 +109,7 @@ onMounted(() => {
     width: textBoxWidth,
     height: textBoxHeight,
     fill: textColor,
+    fontWeight: textBold,
   });
 
   watch([positionX,positionY],([x,y])=>{
