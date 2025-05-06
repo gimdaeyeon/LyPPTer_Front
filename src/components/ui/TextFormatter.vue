@@ -13,7 +13,10 @@
 import TextAlignItem from "@/components/ui/TextAlignItem.vue";
 
 const model = defineModel();
-const aligns = ['left', 'center', 'right', 'justify',]
+const aligns = [
+    'left', 'center', 'right',
+  // 'justify', // pptxGenJs에는 해당 속성이 존재하지 않음
+]
 
 </script>
 

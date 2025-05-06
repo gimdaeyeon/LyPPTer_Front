@@ -32,7 +32,7 @@ export function createPPt() {
             color: textColor.value,
             align: textAlign.value,
             fontSize:fontSize.value,
-
+            bold: true,
         });
     })
 

@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {faImage}from '@fortawesome/free-regular-svg-icons';
 
-library.add(faX,faAlignLeft,faAlignCenter,faAlignJustify,faAlignRight,
+library.add(faX,faAlignLeft,faAlignCenter,faAlignRight,
     faUpload,faPalette,faImage,
     );
 

@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="w-full">
-      <label class="text-sm font-medium">Text Alignment</label>
+      <label class="text-sm font-medium">Text Formatting</label>
       <TextAlignSelector v-model="textAlign"/>
     </div>
     <div class="w-full">
@@ -67,7 +67,7 @@
 
 <script setup>
 
-import TextAlignSelector from "@/components/ui/TextAlignSelector.vue";
+import TextAlignSelector from "@/components/ui/TextFormatter.vue";
 import LabeledInput from "@/components/ui/LabeledInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {ref, toRefs, useTemplateRef} from "vue";
