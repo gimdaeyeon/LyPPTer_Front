@@ -6,7 +6,7 @@ import {getDate} from "@/util/dateUtils.js";
 
 export function createPPt() {
     const lyricsStore = useLyrics();
-    const {lyricsSlides, title} = storeToRefs(lyricsStore);
+    const {lyricsSlides, title, bgDataUrl} = storeToRefs(lyricsStore);
     const {
         fontSize, textBoxWidth, textBoxHeight,
         textColor, bgColor, positionX, positionY, textAlign,
@@ -16,27 +16,37 @@ export function createPPt() {
 
     // 1. Create a Presentation
     const pres = new PptxGenJS;
-    const masterName = 'LYRICS_BG'
+    const colorBgMaster = 'COLOR_BG'
+    const imageBgMaster = 'IMAGE_BG'
 
     pres.defineSlideMaster({
-        title: masterName,
-        background: {color: bgColor.value},
+        title: colorBgMaster,
+        background: {color: bgColor.value,},
+    });
 
+    pres.defineSlideMaster({
+        title: imageBgMaster,
+        background: {
+            data: bgDataUrl.value,
+            // path: 'https://../bg.jpg' // 외부 URL
+        },
     });
 
     lyricsSlides.value.forEach(lyrics => {
-        const slide = pres.addSlide({masterName});
+        const slide = pres.addSlide({
+            masterName: isBgImg.value ? imageBgMaster : colorBgMaster,
+        });
 
         slide.addText(lyrics, {
             x: 1.5,
             y: 1.5,
             color: textColor.value,
             align: textAlign.value,
-            fontSize:fontSize.value,
+            fontSize: fontSize.value,
             bold: isTextBold.value,
         });
     })
 
 //     4. Save the Presentation
-    pres.writeFile({fileName: title.value||getDate()});
+    pres.writeFile({fileName: title.value || getDate()});
 }
