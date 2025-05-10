@@ -20,6 +20,7 @@ export const useLyrics = defineStore('lyrics', () => {
         canvasWidth:0,
         canvasHeight:0,
         isTextBold: false,
+        fontFamily:'Arial',
     });
 
     const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일

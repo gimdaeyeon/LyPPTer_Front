@@ -13,7 +13,13 @@
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Text Formatting</label>
-      <TextFormatter v-model="textAlign" v-model:isTextBold="isTextBold" />
+      <TextFormatter v-model="textAlign" v-model:isTextBold="isTextBold"/>
+    </div>
+    <div class="w-full">
+      <label class="text-sm font-medium">Font Family</label>
+      <select id="countries" class="input p-2" v-model="fontFamily">
+        <option v-for="font in fontFamilies" >{{ font }}</option>
+      </select>
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Position</label>
@@ -73,6 +79,7 @@ import {useLyrics} from "@/store/useLyrics.js";
 import {ref, toRefs, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {fontFamilies} from "@/util/fontFamily.js";
 
 const lyricsStore = useLyrics();
 const fileName = ref('Choose image');
@@ -83,8 +90,10 @@ const {
   fontSize, textAlign, positionX,
   positionY, textBoxWidth,
   textBoxHeight, isBgImg, bgColor, textColor,
-  isTextBold,
+  isTextBold,fontFamily,
 } = toRefs(lyricsStore.settings);
+
+
 
 function onImageSelected(e) {
   const file = e.target.files?.[0];

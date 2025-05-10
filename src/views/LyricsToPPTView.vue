@@ -38,6 +38,7 @@ const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
   canvasWidth, canvasHeight, isBgImg,isTextBold,
+    fontFamily,
 } = toRefs(lyricsStore.settings);
 
 onMounted(() => {
@@ -82,7 +83,7 @@ onMounted(() => {
     // left: positionX.value,
     // top: positionY.value,
     fontWeight: textBold.value,
-    // fontFamily: 'Calibri',
+    fontFamily: fontFamily.value,
   });
 
   text.setControlVisible("mtr", false); // 회전 핸들 숨기기
@@ -110,6 +111,7 @@ onMounted(() => {
     height: textBoxHeight,
     fill: textColor,
     fontWeight: textBold,
+    fontFamily,
   });
 
   watch([positionX,positionY],([x,y])=>{

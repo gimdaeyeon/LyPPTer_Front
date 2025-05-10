@@ -11,7 +11,7 @@ export function createPPt() {
         fontSize, textBoxWidth, textBoxHeight,
         textColor, bgColor, positionX, positionY, textAlign,
         canvasWidth, canvasHeight, isBgImg,
-        isTextBold,
+        isTextBold,fontFamily,
     } = toRefs(lyricsStore.settings);
 
     // 1. Create a Presentation
@@ -44,6 +44,7 @@ export function createPPt() {
             align: textAlign.value,
             fontSize: fontSize.value,
             bold: isTextBold.value,
+            fontFace:fontFamily.value,
         });
     })
 
