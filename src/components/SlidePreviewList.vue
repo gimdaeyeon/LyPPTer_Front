@@ -27,7 +27,7 @@ const {lyricsSlides, currentSlideIdx, bgDataUrl} = storeToRefs(lyricsStore);
 const {
   fontSize, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY, textAlign,
-  canvasWidth, canvasHeight,isBgImg,
+  canvasWidth, canvasHeight,isBgImg,fontFamily,
 } = toRefs(lyricsStore.settings);
 
 const previews = ref([]); // ✅ 이미지 목록
@@ -36,7 +36,7 @@ watch([
   lyricsSlides, bgDataUrl,
   fontSize, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY, textAlign,
-  canvasWidth, canvasHeight,isBgImg,
+  canvasWidth, canvasHeight,isBgImg, fontFamily,
 ], generatePreviews,);
 
 let cachedImageElement = null; //HTMLImageElement
@@ -86,6 +86,7 @@ async function generatePreviews() {
       fontSize: fontSize.value,
       fill: textColor.value,
       textAlign: textAlign.value,
+      fontFamily:fontFamily.value,
     });
 
     textBox.setPositionByOrigin(
