@@ -8,7 +8,7 @@
     </router-link>
     <div class="flex flex-1 justify-end gap-8">
       <div class="flex items-center gap-9">
-        <router-link v-for="menu in menus" class="h-menu-item" :to="menu.link">{{menu.label}}</router-link>
+<!--        <router-link v-for="menu in menus" class="h-menu-item" :to="menu.link">{{menu.label}}</router-link>-->
       </div>
       <div class="flex gap-2">
         <button @click="createPPt"
@@ -17,10 +17,9 @@
           <span class="truncate">Export</span>
         </button>
       </div>
-      <div
-          class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-          style='background-image: url("https://cdn.usegalileo.ai/sdxl10/7a9a8be9-1695-433a-83f4-faaba9c28106.png");'
-      ></div>
+<!--      <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"-->
+<!--          style='background-image: url("https://cdn.usegalileo.ai/sdxl10/7a9a8be9-1695-433a-83f4-faaba9c28106.png");'-->
+<!--      ></div>-->
     </div>
   </header>
 </template>
