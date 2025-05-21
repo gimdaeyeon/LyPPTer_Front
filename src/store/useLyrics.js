@@ -19,7 +19,7 @@ export const useLyrics = defineStore('lyrics', () => {
         bgColor: '#000000',
         canvasWidth:0,
         canvasHeight:0,
-        isTextBold: false,
+        isTextBold: true,
         fontFamily:'Arial',
     });
 

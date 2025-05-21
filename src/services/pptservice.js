@@ -21,7 +21,7 @@ export function createPPt() {
 
     pres.defineSlideMaster({
         title: colorBgMaster,
-        background: {color: bgColor.value,},
+        background: {color: bgColor.value.replace('#',''),},
     });
 
     pres.defineSlideMaster({
@@ -40,7 +40,7 @@ export function createPPt() {
         slide.addText(lyrics, {
             x: 1.5,
             y: 1.5,
-            color: textColor.value,
+            color: textColor.value.replace('#',''),
             align: textAlign.value,
             fontSize: fontSize.value,
             bold: isTextBold.value,
