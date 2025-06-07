@@ -72,12 +72,16 @@ onMounted(() => {
     textAlign: textAlign.value,
     fill: textColor.value,
     padding: 10,
+    hasBorders:false,
+    hasControls:false,
     borderColor: '#00AB6B',
     borderDashArray: [6],
     cornerColor: '#00AB6B',
     cornerSize: 10,
     // selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
     selectable: false,
+    editable: false,
+    evented: false,
     lockScalingX: false, // x축 크기 조절 가능
     lockScalingY: false, // y축 크기 조절 가능
     // left: positionX.value,
