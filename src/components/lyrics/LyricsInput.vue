@@ -24,20 +24,28 @@ const textarea = useTemplateRef('textarea');
 
 // 가사 입력창에서 입력 커서의 이동에 따라 현재 슬라이드 번호를 변경하는 함수
 function setCurrentSlide(){
-  const cursorPos = textarea.value.textarea.selectionStart;
-  let offset= 0;
+  // if (!textarea.value) return
+  const pos = textarea.value.textarea.selectionStart
 
-  for(let i = 0; i<lyricsSlides.value.length; i++){
-    const slide = lyricsSlides.value[i];
-    const end = offset + slide.length;
+  /* 커서 앞 문자열 */
+  const before = lyrics.value.slice(0, pos)
 
-    if(cursorPos <= end){
-      currentSlideIdx.value = i;
-      return;
-    }
-    // 슬라이드 간 줄바꿈 2개 길이 반영
-    offset = end +2;
-  }
+  /* 구분자(엔터 2줄↑)로 split → 배열 길이 - 1 == 슬라이드 인덱스 */
+  currentSlideIdx.value = before.split(/(?:\r?\n){2,}/).length -1
+  // const cursorPos = textarea.value.textarea.selectionStart;
+  // let offset= 0;
+  //
+  // for(let i = 0; i<lyricsSlides.value.length; i++){
+  //   const slide = lyricsSlides.value[i].trim();
+  //   const end = offset + slide.length;
+  //
+  //   if(cursorPos <= end){
+  //     currentSlideIdx.value = i;
+  //     return;
+  //   }
+  //   // 슬라이드 간 줄바꿈 2개 길이 반영
+  //   offset = end +2;
+  // }
 }
 
 

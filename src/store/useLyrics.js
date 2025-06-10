@@ -13,7 +13,7 @@ export const useLyrics = defineStore('lyrics', () => {
         textAlign: 'center',
         positionX: 175,
         positionY: 70,
-        textBoxWidth: 400,
+        textBoxWidth: 405,
         textBoxHeight: 50,
         isBgImg: false,
         bgColor: '#000000',
@@ -36,7 +36,9 @@ export const useLyrics = defineStore('lyrics', () => {
         return lyricsSlides.value[currentSlideIdx.value];
     });
 
-    const lyricsSlides = computed(()=> lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim()));
+    const lyricsSlides = computed(()=>
+        lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim())
+    );
 
     watch(lyrics, (newLyrics) => {
         lyrics.value = newLyrics.replace(/(?:\r?\n){2,}/g, '\n\n');

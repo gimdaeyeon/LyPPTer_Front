@@ -8,7 +8,7 @@
 
 body {
     -ms-overflow-style: none;
-    font-family: "Plus Jakarta Sans", "Noto Sans", "Noto Sans KR", serif !important;
+    /*font-family: "Plus Jakarta Sans", "Noto Sans", "Noto Sans KR", serif !important;*/
 }
 
 body::-webkit-scrollbar {

@@ -21,7 +21,7 @@
 import {useLyrics} from '@/store/useLyrics.js';
 import {storeToRefs} from 'pinia';
 import SlideThumb from "@/components/SlideThumb.vue";
-import {nextTick, ref, watch} from "vue";
+import {ref, watch} from "vue";
 
 const lyricsStore = useLyrics();
 const {lyricsSlides, currentSlideIdx, bgDataUrl} = storeToRefs(lyricsStore);
@@ -31,16 +31,14 @@ const thumbEls = ref([]);
 
 // 활성 슬라이드가 바뀔 때 자동 스크롤
 watch(currentSlideIdx, idx => {
-  nextTick(() => {
-    const el = thumbEls.value[idx];
-    if (el) {
-      el.scrollIntoView({
-        block: 'center', // 가운데 정렬 (start/end)
-        behavior: 'smooth'
-      })
-    }
-  })
-});
+  const el = thumbEls.value[idx];
+  if (el) {
+    el.scrollIntoView({
+      block: 'center', // 가운데 정렬 (start/end)
+      behavior: 'smooth'
+    })
+  }
+},{flush:'post'});
 
 
 </script>
