@@ -28,7 +28,7 @@ import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {useFabricBinding} from "@/composables/useFabricBinding.js";
-import {getFabricImage} from "@/util/imageUtils.js";
+import {getFabricImage} from "@/utils/imageUtils.js";
 
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');

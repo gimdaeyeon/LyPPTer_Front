@@ -27,7 +27,7 @@
 <script setup>
 
 import {ref} from "vue";
-import {createPPt} from "@/services/pptservice.js";
+import {createPPt} from "@/services/pptService.js";
 
 const menus = ref([
   {label: 'Home',link:'#'},

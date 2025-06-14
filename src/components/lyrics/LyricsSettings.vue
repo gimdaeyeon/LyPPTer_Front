@@ -79,7 +79,7 @@ import {useLyrics} from "@/store/useLyrics.js";
 import {ref, toRefs, useTemplateRef} from "vue";
 import {storeToRefs} from "pinia";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {fontFamilies} from "@/util/fontFamily.js";
+import {fontFamilies} from "@/utils/fontFamily.js";
 
 const lyricsStore = useLyrics();
 const fileName = ref('Choose image');

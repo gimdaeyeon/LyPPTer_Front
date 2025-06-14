@@ -2,7 +2,7 @@ import PptxGenJS from "pptxgenjs";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {toRefs} from "vue";
-import {getDate} from "@/util/dateUtils.js";
+import {getDate} from "@/utils/dateUtils.js";
 
 export function createPPt() {
     const lyricsStore = useLyrics();
