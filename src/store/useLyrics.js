@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {computed, reactive, ref, watch} from "vue";
+import {makeThumbDataUrl} from "@/utils/imageUtils.js";
 
 export const useLyrics = defineStore('lyrics', () => {
     const currentSlideIdx = ref(0); // 현재 활성 슬라이드 인덱스
@@ -25,11 +26,14 @@ export const useLyrics = defineStore('lyrics', () => {
 
     const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일
     const bgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
+    const thumbBgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
+
 
     // 배경 이미지 설정(선택창에서 file 받아 처리)
     async function setBgFile(file){
         bgFile.value = file;
         bgDataUrl.value = file?await fileToBase64(file) : null;
+        thumbBgDataUrl.value = file?await makeThumbDataUrl(bgDataUrl.value) : null;
     }
 
     const currentLyrics = computed(()=>{
@@ -56,6 +60,6 @@ export const useLyrics = defineStore('lyrics', () => {
 
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,
-        lyricsSlides,bgFile,bgDataUrl,setBgFile,textBold,
+        lyricsSlides,bgFile,bgDataUrl,setBgFile,textBold,thumbBgDataUrl,
     }
 });
