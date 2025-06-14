@@ -14,7 +14,6 @@ export function createPPt() {
         isTextBold,fontFamily,
     } = toRefs(lyricsStore.settings);
 
-    // 1. Create a Presentation
     const pres = new PptxGenJS;
     const colorBgMaster = 'COLOR_BG'
     const imageBgMaster = 'IMAGE_BG'
@@ -34,7 +33,7 @@ export function createPPt() {
 
     lyricsSlides.value.forEach(lyrics => {
         const slide = pres.addSlide({
-            masterName: isBgImg.value ? imageBgMaster : colorBgMaster,
+            masterName: isBgImg.value && bgDataUrl.value ? imageBgMaster : colorBgMaster,
         });
 
         slide.addText(lyrics, {

@@ -54,7 +54,6 @@ export const useLyrics = defineStore('lyrics', () => {
         })
     }
 
-
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,
         lyricsSlides,bgFile,bgDataUrl,setBgFile,textBold,
