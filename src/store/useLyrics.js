@@ -28,7 +28,6 @@ export const useLyrics = defineStore('lyrics', () => {
     const bgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
     const thumbBgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
 
-
     // 배경 이미지 설정(선택창에서 file 받아 처리)
     async function setBgFile(file){
         bgFile.value = file;
