@@ -73,6 +73,7 @@ const textStyle = computed(() => {
   const s = props.settings
   return {
     top: (s.positionY / s.canvasHeight) * 100 + '%',
+    left: (s.positionX / s.canvasWidth) * 100 + '%',
     color: s.textColor,
     fontSize: s.fontSize * thumbScale.value + 'px',
     fontWeight: s.isTextBold ? 'bold' : 'normal',
