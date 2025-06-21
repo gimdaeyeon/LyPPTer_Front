@@ -6,13 +6,13 @@
            :class="{'mode-on':!isSetMode}"
            @click.prevent="isSetMode=false"
         >
-          <p class="mode-text">Lyrics</p>
+          <p class="mode-text">Lyrics &nbsp;&nbsp;<font-awesome-icon :icon="['fas', 'file-pen']"/></p>
         </a>
         <a class="lyrics-mode-tab"
            :class="{'mode-on':isSetMode}"
            @click.prevent="isSetMode=true"
         >
-          <p class="mode-text">Settings</p>
+          <p class="mode-text">Settings &nbsp;&nbsp;<font-awesome-icon :icon="['fas', 'gear']"/></p>
         </a>
       </div>
     </div>
@@ -26,6 +26,7 @@
 import {ref} from "vue";
 import LyricsInput from "@/components/lyrics/LyricsInput.vue";
 import LyricsSettings from "@/components/lyrics/LyricsSettings.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const isSetMode = ref(false);
 </script>
