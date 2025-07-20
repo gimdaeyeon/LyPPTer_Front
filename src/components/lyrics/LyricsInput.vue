@@ -20,7 +20,7 @@ import {storeToRefs} from "pinia";
 import {useTemplateRef} from "vue";
 
 const lyricsStore = useLyrics();
-const {lyrics,lyricsSlides, currentSlideIdx} = storeToRefs(lyricsStore);
+const {lyrics, currentSlideIdx} = storeToRefs(lyricsStore);
 const textarea = useTemplateRef('textarea');
 
 // 가사 입력창에서 입력 커서의 이동에 따라 현재 슬라이드 번호를 변경하는 함수

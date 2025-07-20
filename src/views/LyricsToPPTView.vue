@@ -33,12 +33,12 @@ import {getFabricImage} from "@/utils/imageUtils.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, currentLyrics, bgDataUrl, title, textBold,} = storeToRefs(lyricsStore);
+const {lyrics, currentLyrics, bgDataUrl, title, textBold, currentSlideIdx} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
-  canvasWidth, canvasHeight, isBgImg,isTextBold,
-    fontFamily,
+  canvasWidth, canvasHeight, isBgImg, isTextBold,
+  fontFamily,
 } = toRefs(lyricsStore.settings);
 
 onMounted(() => {
@@ -72,16 +72,15 @@ onMounted(() => {
     textAlign: textAlign.value,
     fill: textColor.value,
     padding: 10,
-    hasBorders:false,
-    hasControls:false,
+    hasBorders: false,
+    hasControls: false,
     borderColor: '#00AB6B',
     borderDashArray: [6],
     cornerColor: '#00AB6B',
     cornerSize: 10,
-    // selectable: true, // 사용자가 클릭하여 조정 가능하도록 설정
-    selectable: false,
-    editable: false,
-    evented: false,
+    selectable: true,
+    editable: true,
+    evented: true,
     lockScalingX: false, // x축 크기 조절 가능
     lockScalingY: false, // y축 크기 조절 가능
     // left: positionX.value,
@@ -94,18 +93,25 @@ onMounted(() => {
   text.setControlVisible("mt", false);
   text.setControlVisible("mb", false);
 
-  positionX.value =fabricCanvas.getWidth()/2;
-  positionY.value = fabricCanvas.getHeight()*0.2;
+  positionX.value = fabricCanvas.getWidth() / 2;
+  positionY.value = fabricCanvas.getHeight() * 0.2;
 
   text.setPositionByOrigin(
-      {x: positionX.value,y:positionY.value},
-'center',
-'center'
+      {x: positionX.value, y: positionY.value},
+      'center',
+      'center'
   );
   text.setCoords(); // 위치 업데이트
 
   fabricCanvas.add(text);
   fabricCanvas.setActiveObject(text);
+
+  // 캔버스 안에서 가사를 수정할 때 전체 가사에도 반영
+  fabricCanvas.on('text:changed', ({target}) => {
+    lyrics.value = lyrics.value.trim().split(/(?:\r?\n){2,}/)
+        .map((slide, i) => (i === currentSlideIdx.value ? target.text : slide))
+        .join("\n\n");
+  });
 
   useFabricBinding(fabricCanvas, text, {
     text: currentLyrics,
@@ -118,9 +124,9 @@ onMounted(() => {
     fontFamily,
   });
 
-  watch([positionX,positionY],([x,y])=>{
+  watch([positionX, positionY], ([x, y]) => {
     text.setPositionByOrigin(
-        {x,y},
+        {x, y},
         'center',
         'center'
     );
@@ -136,8 +142,8 @@ onMounted(() => {
   watch(isBgImg, async (newValue) => {
     let img = null;
 
-    if(newValue && bgDataUrl.value){
-      img = await getFabricImage(bgDataUrl.value,fabricCanvas.getWidth(),fabricCanvas.getHeight());
+    if (newValue && bgDataUrl.value) {
+      img = await getFabricImage(bgDataUrl.value, fabricCanvas.getWidth(), fabricCanvas.getHeight());
     }
     fabricCanvas.set('backgroundImage', img);
     fabricCanvas.requestRenderAll();
@@ -150,7 +156,7 @@ onMounted(() => {
       return;
     }
 
-    const img = await getFabricImage(newImg,fabricCanvas.getWidth(),fabricCanvas.getHeight());
+    const img = await getFabricImage(newImg, fabricCanvas.getWidth(), fabricCanvas.getHeight());
 
     fabricCanvas.set('backgroundImage', img);
     fabricCanvas.requestRenderAll();
@@ -190,12 +196,12 @@ onMounted(() => {
         });
       }
 
-      const textBox = fabricCanvas.getObjects().find(obj=>obj instanceof Textbox);
-      if(textBox){
-        positionX.value = width/2;
-        positionY.value = height*0.2;
+      const textBox = fabricCanvas.getObjects().find(obj => obj instanceof Textbox);
+      if (textBox) {
+        positionX.value = width / 2;
+        positionY.value = height * 0.2;
         textBox.setPositionByOrigin(
-            {x:width/2,y:height*0.2},
+            {x: width / 2, y: height * 0.2},
             'center',
             'center'
         );
