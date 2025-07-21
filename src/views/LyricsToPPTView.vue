@@ -33,7 +33,7 @@ import {getFabricImage} from "@/utils/imageUtils.js";
 const canvasContainer = useTemplateRef('canvasContainer');
 const canvas = useTemplateRef('canvas');
 const lyricsStore = useLyrics();
-const {lyrics, currentLyrics, bgDataUrl, title, textBold, currentSlideIdx} = storeToRefs(lyricsStore);
+const {lyrics, currentLyrics, bgDataUrl, title, textBold, currentSlideIdx, lyricsSlides} = storeToRefs(lyricsStore);
 const {
   fontSize, textAlign, textBoxWidth, textBoxHeight,
   textColor, bgColor, positionX, positionY,
@@ -108,7 +108,7 @@ onMounted(() => {
 
   // 캔버스 안에서 가사를 수정할 때 전체 가사에도 반영
   fabricCanvas.on('text:changed', ({target}) => {
-    lyrics.value = lyrics.value.trim().split(/(?:\r?\n){2,}/)
+    lyrics.value = lyricsSlides.value
         .map((slide, i) => (i === currentSlideIdx.value ? target.text : slide))
         .join("\n\n");
   });
