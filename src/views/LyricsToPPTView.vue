@@ -108,10 +108,52 @@ onMounted(() => {
 
   // 캔버스 안에서 가사를 수정할 때 전체 가사에도 반영
   fabricCanvas.on('text:changed', ({target}) => {
-    lyrics.value = lyricsSlides.value
-        .map((slide, i) => (i === currentSlideIdx.value ? target.text : slide))
-        .join("\n\n");
+    // lyrics.value = lyricsSlides.value
+    //     .map((slide, i) => (i === currentSlideIdx.value ? target.text : slide))
+    //     .join("\n\n");
+    const newSlides = [...lyricsSlides.value];
+
+    //   캔버스에서 입력입력된 텍스트에 포함된 슬라이드 구분자
+    const sanitizedText = target.text.replace(/(?:\r?\n){2,}/g, '\n');
+    newSlides[currentSlideIdx.value] = sanitizedText;
+    lyrics.value = newSlides.join("\n\n");
+    // 사용자가 슬라이드 구분자를 입력했을 경우, 캔버스 내 텍스트도 동기화
+    if (target.text !== sanitizedText) {
+      target.set('text', sanitizedText);
+      target.canvas.renderAll();
+    }
   });
+
+  // const onKeydownInEditor = (e) => {
+  //   if (e.key === 'Enter') {
+  //     const textObject = fabricCanvas.getActiveObject();
+  //     if (!textObject || !textObject.isEditing) return;
+  //
+  //     const textValue = textObject.text;
+  //     const cursorPos = textObject.selectionStart;
+  //
+  //     // 커서 앞 두 문자가 연달아 개행문자('\n\n')인지 확인하여 세 번째 엔터 입력을 방지
+  //     if (cursorPos > 1 && textValue.substring(cursorPos - 2, cursorPos) === '\n\n') {
+  //       e.preventDefault();
+  //       e.stopPropagation();
+  //     }
+  //   }
+  // };
+  //
+  // // 텍스트 편집 모드에 진입하면 이벤트 리스너 추가
+  // text.on('editing:entered', () => {
+  //   if (text.hiddenTextarea) {
+  //     text.hiddenTextarea.addEventListener('keydown', onKeydownInEditor);
+  //   }
+  // });
+  //
+  // // 텍스트 편집 모드에서 나가면 이벤트 리스너 제거
+  // text.on('editing:exited', () => {
+  //   if (text.hiddenTextarea) {
+  //     text.hiddenTextarea.removeEventListener('keydown', onKeydownInEditor);
+  //   }
+  // });
+
 
   useFabricBinding(fabricCanvas, text, {
     text: currentLyrics,
