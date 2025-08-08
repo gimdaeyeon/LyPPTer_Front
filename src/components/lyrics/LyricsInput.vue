@@ -4,7 +4,7 @@
         <TextArea ref="textarea" @keyup="setCurrentSlide" @click="setCurrentSlide"
             placeholder="Type or paste lyrics here..."
             class="text-area form-input flex w-full min-w-0 flex-1 resize-none overflow-y-scroll rounded-xl focus:outline-0 border
-            border-gray-200 h-full min-h-36 placeholder:text-secondary p-[15px] text-base font-normal leading-normal"
+            border-gray-200 h-full min-h-36 placeholder:text-secondary p-[15px] text-base leading-normal"
             v-model="localLyrics"
         />
     </label>
@@ -17,11 +17,13 @@ import TextArea from "@/components/common/tag/TextArea.vue";
 
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
-import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
+import {onMounted, ref, useTemplateRef, watch} from "vue";
 
 const lyricsStore = useLyrics();
 const {lyrics, currentSlideIdx} = storeToRefs(lyricsStore);
 const textarea = useTemplateRef('textarea');
+// pinia 상태 직접연결시 컴포넌트 재렌더링에의해 키보드 커서가 초기화되는 현상 발생
+// 해당 변수를 둠으로써 커서위치 값에 영향이 가지 않도록 처리
 const localLyrics = ref('');
 
 // 가사 입력창에서 입력 커서의 이동에 따라 현재 슬라이드 번호를 변경하는 함수
