@@ -3,7 +3,7 @@ import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {toRefs} from "vue";
 import {getDate} from "@/utils/dateUtils.js";
-import {pxToInch, relPxToIn} from "@/utils/utils.js";
+import {relPxToIn} from "@/utils/utils.js";
 
 export function createPPt() {
     const lyricsStore = useLyrics();
@@ -12,7 +12,7 @@ export function createPPt() {
         fontSize, textBoxWidth, textBoxHeight,
         textColor, bgColor, positionX, positionY, textAlign,
         canvasWidth, canvasHeight, isBgImg,
-        isTextBold,fontFamily,
+        isTextBold, fontFamily,
     } = toRefs(lyricsStore.settings);
 
     const pres = new PptxGenJS;
@@ -23,7 +23,7 @@ export function createPPt() {
 
     pres.defineSlideMaster({
         title: colorBgMaster,
-        background: {color: bgColor.value.replace('#',''),},
+        background: {color: bgColor.value.replace('#', ''),},
     });
 
     pres.defineSlideMaster({
@@ -36,11 +36,11 @@ export function createPPt() {
 
     lyricsSlides.value.forEach(lyrics => {
         /* --- ① 폭·높이(px → in) -------------------------------- */
-        const wIn = relPxToIn(textBoxWidth.value,  canvasWidth.value,  SLIDE_W);
+        const wIn = relPxToIn(textBoxWidth.value, canvasWidth.value, SLIDE_W);
         const hIn = relPxToIn(textBoxHeight.value, canvasHeight.value, SLIDE_H);
 
         /* --- ② 중심(px → in) ----------------------------------- */
-        const centerXIn = relPxToIn(positionX.value, canvasWidth.value,  SLIDE_W);
+        const centerXIn = relPxToIn(positionX.value, canvasWidth.value, SLIDE_W);
         const centerYIn = relPxToIn(positionY.value, canvasHeight.value, SLIDE_H);
 
         /* --- ③ PPT는 좌상단 기준 → ½ 폭·높이 빼 줌 -------------- */
@@ -57,11 +57,11 @@ export function createPPt() {
             h: hIn,
             // y: pxToInch(positionY.value - textBoxHeight.value / 2),
             // w: '100%',
-            color: textColor.value.replace('#',''),
+            color: textColor.value.replace('#', ''),
             align: textAlign.value,
             fontSize: fontSize.value,
             bold: isTextBold.value,
-            fontFace:fontFamily.value,
+            fontFace: fontFamily.value,
         });
     })
 

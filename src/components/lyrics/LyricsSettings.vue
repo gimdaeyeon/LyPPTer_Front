@@ -17,19 +17,19 @@
     </div>
     <div class="w-full">
       <label class="text-sm font-medium">Font Family</label>
-<!--      <select id="countries" class="input p-2" v-model="fontFamily">-->
-<!--        <option v-for="font in fontFamilies">{{ font }}</option>-->
-<!--      </select>-->
+      <!--      <select id="countries" class="input p-2" v-model="fontFamily">-->
+      <!--        <option v-for="font in fontFamilies">{{ font }}</option>-->
+      <!--      </select>-->
       <input type="text"
-          list="font-family-list"
-          class="input w-full p-2 border rounded"
-          v-model="fontFamily"
-          placeholder="Font"
+             list="font-family-list"
+             class="input w-full p-2 border rounded"
+             v-model="fontFamily"
+             placeholder="Font"
       />
       <datalist id="font-family-list">
         <option v-for="font in fontFamilies"
-            :key="font"
-            :value="font"
+                :key="font"
+                :value="font"
         >
           {{ font }}
         </option>

@@ -7,7 +7,7 @@
       @click="$emit('select', index)"
   >
     <!-- 배경 ---------------------------------------------------------------->
-    <div class="absolute inset-0" :style="bgStyle" />
+    <div class="absolute inset-0" :style="bgStyle"/>
 
     <!-- 가사 텍스트 --------------------------------------------------------->
     <p
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import {ref, computed, onMounted, onUnmounted, useTemplateRef} from 'vue'
+import {computed, onMounted, onUnmounted, ref, useTemplateRef} from 'vue'
 
 /* ---------- props ------------------------------------------------------- */
 const props = defineProps({
@@ -32,7 +32,7 @@ const props = defineProps({
   lyrics: String,
   active: Boolean,
   settings: Object,          // Pinia의 settings 객체
-  bgDataUrl: { type: String, default: null },
+  bgDataUrl: {type: String, default: null},
 })
 defineEmits(['select'])
 
@@ -65,7 +65,7 @@ const bgStyle = computed(() => {
       backgroundPosition: 'center',
     }
   }
-  return { backgroundColor: s.bgColor }
+  return {backgroundColor: s.bgColor}
 })
 
 /* ---------- 3) 텍스트·박스 스타일 -------------------------------------- */

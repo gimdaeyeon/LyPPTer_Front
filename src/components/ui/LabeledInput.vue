@@ -1,10 +1,10 @@
 <template>
-    <div class="flex-1 relative">
-      <label class="labeled-input-label">{{label}}</label>
-      <input class="input pl-14 pr-2" min="50" max="500" :type="type"
-             v-model="model"
-      >
-    </div>
+  <div class="flex-1 relative">
+    <label class="labeled-input-label">{{ label }}</label>
+    <input class="input pl-14 pr-2" min="50" max="500" :type="type"
+           v-model="model"
+    >
+  </div>
 </template>
 
 <script setup>
@@ -12,11 +12,11 @@
 const model = defineModel();
 
 defineProps({
-  label:{
+  label: {
     type: String
   },
-  type:{
-    default:'text'
+  type: {
+    default: 'text'
   }
 });
 </script>

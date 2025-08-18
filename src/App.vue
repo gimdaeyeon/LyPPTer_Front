@@ -1,5 +1,5 @@
 <template>
-<!--    <router-view/>-->
+  <!--    <router-view/>-->
   <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
     <div class="layout-container flex h-full grow flex-col">
       <HeaderMenu/>

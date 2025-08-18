@@ -36,7 +36,7 @@ export async function makeThumbDataUrl(base64, max = 320, quality = 0.6) {
 
     // 2) 리사이즈 크기 계산
     const scale = max / Math.max(img.width, img.height);
-    const w = Math.round(img.width  * scale);
+    const w = Math.round(img.width * scale);
     const h = Math.round(img.height * scale);
 
     // 3) 캔버스에 그려 JPEG(또는 WebP)로 압축

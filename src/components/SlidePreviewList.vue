@@ -30,15 +30,15 @@ const thumbEls = ref([]);
 
 // 활성 슬라이드가 바뀔 때 자동 스크롤
 /* 길이 변화 → 새 슬라이드 등장 */
-watch(() => lyricsSlides.value.length, doScroll, { flush:'post' })
+watch(() => lyricsSlides.value.length, doScroll, {flush: 'post'})
 
 /* 커서 이동 등으로 인덱스만 변할 때(이미 존재하는 노드) */
-watch(currentSlideIdx, doScroll, { flush:'post', immediate:false })
+watch(currentSlideIdx, doScroll, {flush: 'post', immediate: false})
 
 function doScroll() {
   nextTick(() => {
     thumbEls.value[currentSlideIdx.value]
-        ?.scrollIntoView({ block:'center', behavior:'smooth' })
+        ?.scrollIntoView({block: 'center', behavior: 'smooth'})
   })
 }
 

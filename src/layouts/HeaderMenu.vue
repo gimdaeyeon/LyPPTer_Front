@@ -1,12 +1,12 @@
 <template>
   <header class="flex items-center justify-between whitespace-nowrap border-b border-b-gray-200 px-10 py-3">
     <router-link to="/" class="flex items-center gap-4 cursor-pointer">
-<!--      logo-->
-<!--      <div class="size-4">-->
-<!--        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">-->
-<!--          <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>-->
-<!--        </svg>-->
-<!--      </div>-->
+      <!--      logo-->
+      <!--      <div class="size-4">-->
+      <!--        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+      <!--          <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>-->
+      <!--        </svg>-->
+      <!--      </div>-->
       <h2 class="text-lg font-[1000] leading-tight tracking-[-0.015em]">Lyppter</h2>
     </router-link>
     <div class="flex flex-1 justify-end gap-8">
