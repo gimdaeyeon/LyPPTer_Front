@@ -75,7 +75,7 @@ const textStyle = computed(() => {
     top: (s.positionY / s.canvasHeight) * 100 + '%',
     left: (s.positionX / s.canvasWidth) * 100 + '%',
     color: s.textColor,
-    fontSize: s.fontSize * thumbScale.value + 'px',
+    fontSize: `${s.fontSize * thumbScale.value}px`,
     fontWeight: s.isTextBold ? 'bold' : 'normal',
     fontFamily: s.fontFamily,
     textAlign: s.textAlign,
@@ -86,7 +86,7 @@ const textStyle = computed(() => {
 const boxStyle = computed(() => {
   const s = props.settings
   return {
-    width: s.textBoxWidth * thumbScale.value + 'px',
+    width: `${s.textBoxWidth * thumbScale.value}px`,
     // height: s.textBoxHeight * thumbScale.value + 'px',
     // overflow: 'hidden',
     display: 'flex',
