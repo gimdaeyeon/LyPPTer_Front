@@ -2,8 +2,8 @@
   <div class="layout-content-container flex flex-col border-t border-t-gray-200">
     <footer class="flex space gap-6 p-5 text-center @container">
       <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
-        <a class="text-sm font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
-        <a class="text-sm font-normal leading-normal min-w-40" href="#">Terms of Service</a>
+<!--        <a class="text-sm font-normal leading-normal min-w-40" href="#">Privacy Policy</a>-->
+<!--        <a class="text-sm font-normal leading-normal min-w-40" href="#">Terms of Service</a>-->
       </div>
       <div class="flex flex-wrap justify-center gap-4">
         <!--       트위터 로고-->
