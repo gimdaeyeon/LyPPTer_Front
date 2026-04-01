@@ -7,21 +7,20 @@ export const useLyrics = defineStore('lyrics', () => {
     const lyrics = ref('가사를 입력하세요'); // 사용자가 입력한 전체 가사
     const title = ref('')
 
-    // 슬라이드 옵션
+    // 슬라이드 옵션 (PPT 네이티브 단위: fontSize=pt, 위치/크기=inches)
     const settings = reactive({
-        fontSize: 30,
+        fontSize: 24,            // pt (PPT 포인트)
         textColor: '#FFFFFF',
         textAlign: 'center',
-        positionX: 175,
-        positionY: 70,
-        textBoxWidth: 405,
-        textBoxHeight: 50,
+        positionX: 5.0,          // inches (슬라이드 중앙)
+        positionY: 1.25,         // inches (상단 ~22%)
+        textBoxWidth: 8.5,       // inches
+        textBoxHeight: 1.5,      // inches
         isBgImg: false,
         bgColor: '#000000',
-        canvasWidth: 0,
-        canvasHeight: 0,
         isTextBold: true,
         fontFamily: 'Arial',
+        lineSpacing: 1.0,        // 줄간격 배수
     });
 
     const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일
@@ -49,6 +48,14 @@ export const useLyrics = defineStore('lyrics', () => {
 
     const textBold = computed(() => settings.isTextBold ? 'bold' : 'normal');
 
+    function updateSlideText(index, newText) {
+        const slides = lyrics.value.trim().split(/(?:\r?\n){2,}/);
+        if (index >= 0 && index < slides.length) {
+            slides[index] = newText;
+            lyrics.value = slides.join('\n\n');
+        }
+    }
+
     function fileToBase64(file) {
         return new Promise(resolve => {
             const reader = new FileReader();
@@ -59,6 +66,6 @@ export const useLyrics = defineStore('lyrics', () => {
 
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,
-        lyricsSlides, bgFile, bgDataUrl, setBgFile, textBold, thumbBgDataUrl,
+        lyricsSlides, bgFile, bgDataUrl, setBgFile, textBold, thumbBgDataUrl, updateSlideText,
     }
 });

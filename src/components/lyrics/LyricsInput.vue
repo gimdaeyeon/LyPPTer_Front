@@ -44,6 +44,13 @@ watch(localLyrics, (newLyrics) => {
   lyrics.value = newLyrics;
 });
 
+// 외부에서 lyrics가 변경된 경우 (SlidePreview 인라인 편집 등)
+watch(lyrics, (newLyrics) => {
+  if (newLyrics !== localLyrics.value) {
+    localLyrics.value = newLyrics;
+  }
+});
+
 </script>
 
 <style scoped>

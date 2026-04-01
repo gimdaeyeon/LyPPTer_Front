@@ -1,5 +1,1 @@
-export function pxToInch(px) {
-    return px / 96;
-}
-
-export const relPxToIn = (px, canvasPx, slideIn) => (px / canvasPx) * slideIn;
+// 단위 변환 함수는 pptUnits.js로 이동됨
