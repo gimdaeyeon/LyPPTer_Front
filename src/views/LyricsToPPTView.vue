@@ -17,6 +17,7 @@
                   @update:positionX="v => lyricsStore.settings.positionX = v"
                   @update:positionY="v => lyricsStore.settings.positionY = v"
                   @update:textBoxWidth="v => lyricsStore.settings.textBoxWidth = v"
+                  @update:textBoxHeight="v => lyricsStore.settings.textBoxHeight = v"
                   @update:lyrics="v => lyricsStore.updateSlideText(lyricsStore.currentSlideIdx, v)"
               />
             </div>
