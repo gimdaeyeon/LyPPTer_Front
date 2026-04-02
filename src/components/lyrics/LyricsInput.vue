@@ -43,8 +43,9 @@ watch(localLyrics, (newLyrics) => {
 });
 
 // 외부에서 lyrics가 변경된 경우 (SlidePreview 인라인 편집 등)
+// IME 조합 중에는 localLyrics를 덮어쓰지 않음 (한글 입력 끊김 방지)
 watch(lyrics, (newLyrics) => {
-  if (newLyrics !== localLyrics.value) {
+  if (newLyrics !== localLyrics.value && !textarea.value?.composing) {
     localLyrics.value = newLyrics;
   }
 });
