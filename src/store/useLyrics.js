@@ -1,31 +1,58 @@
 import {defineStore} from "pinia";
 import {computed, reactive, ref, watch} from "vue";
 import {makeThumbDataUrl} from "@/utils/imageUtils.js";
+import {splitSlides, normalizeNewlines} from "@/utils/lyricsUtils.js";
+import {
+    DEFAULT_FONT_SIZE_PT, DEFAULT_POSITION_X, DEFAULT_POSITION_Y,
+    DEFAULT_TEXT_BOX_WIDTH, DEFAULT_TEXT_BOX_HEIGHT, DEFAULT_LINE_SPACING,
+} from "@/utils/constants.js";
 
+/* ---------- localStorage 지속성 ---------------------------------------- */
+const STORAGE_KEY = 'lyppter_v1'
+
+function loadFromStorage() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')
+    } catch {
+        return null
+    }
+}
+
+let saveTimer = null
+function debouncedSave(data) {
+    clearTimeout(saveTimer)
+    saveTimer = setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    }, 500)
+}
+
+/* ---------------------------------------------------------------------- */
 export const useLyrics = defineStore('lyrics', () => {
-    const currentSlideIdx = ref(0); // 현재 활성 슬라이드 인덱스
-    const lyrics = ref('가사를 입력하세요'); // 사용자가 입력한 전체 가사
-    const title = ref('')
+    const saved = loadFromStorage()
+
+    const currentSlideIdx = ref(0);
+    const lyrics = ref(saved?.lyrics ?? '가사를 입력하세요');
+    const title = ref(saved?.title ?? '')
 
     // 슬라이드 옵션 (PPT 네이티브 단위: fontSize=pt, 위치/크기=inches)
     const settings = reactive({
-        fontSize: 24,            // pt (PPT 포인트)
-        textColor: '#FFFFFF',
-        textAlign: 'center',
-        positionX: 5.0,          // inches (슬라이드 중앙)
-        positionY: 1.25,         // inches (상단 ~22%)
-        textBoxWidth: 8.5,       // inches
-        textBoxHeight: 1.5,      // inches
-        isBgImg: false,
-        bgColor: '#000000',
-        isTextBold: true,
-        fontFamily: 'Arial',
-        lineSpacing: 1.0,        // 줄간격 배수
+        fontSize: saved?.settings?.fontSize ?? DEFAULT_FONT_SIZE_PT,
+        textColor: saved?.settings?.textColor ?? '#FFFFFF',
+        textAlign: saved?.settings?.textAlign ?? 'center',
+        positionX: saved?.settings?.positionX ?? DEFAULT_POSITION_X,
+        positionY: saved?.settings?.positionY ?? DEFAULT_POSITION_Y,
+        textBoxWidth: saved?.settings?.textBoxWidth ?? DEFAULT_TEXT_BOX_WIDTH,
+        textBoxHeight: saved?.settings?.textBoxHeight ?? DEFAULT_TEXT_BOX_HEIGHT,
+        isBgImg: false, // 이미지는 직렬화 불가 → 저장 안 함
+        bgColor: saved?.settings?.bgColor ?? '#000000',
+        isTextBold: saved?.settings?.isTextBold ?? true,
+        fontFamily: saved?.settings?.fontFamily ?? 'Arial',
+        lineSpacing: saved?.settings?.lineSpacing ?? DEFAULT_LINE_SPACING,
     });
 
     const bgFile = ref(null); // 사용자가 선택한 원본 이미지 파일
     const bgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
-    const thumbBgDataUrl = ref(null); // 미리보기, ppt 생성용 base64
+    const thumbBgDataUrl = ref(null); // 썸네일용 압축 base64
 
     // 배경 이미지 설정(선택창에서 file 받아 처리)
     async function setBgFile(file) {
@@ -39,17 +66,18 @@ export const useLyrics = defineStore('lyrics', () => {
     });
 
     const lyricsSlides = computed(() =>
-        lyrics.value.trim().split(/(?:\r?\n){2,}/).map(line => line.trim())
+        splitSlides(lyrics.value).map(line => line.trim())
     );
 
+    // 3줄 이상 연속 줄바꿈을 2줄로 정규화 (슬라이드 구분자 오염 방지)
     watch(lyrics, (newLyrics) => {
-        lyrics.value = newLyrics.replace(/(?:\r?\n){2,}/g, '\n\n');
+        lyrics.value = normalizeNewlines(newLyrics);
     });
 
     const textBold = computed(() => settings.isTextBold ? 'bold' : 'normal');
 
     function updateSlideText(index, newText) {
-        const slides = lyrics.value.trim().split(/(?:\r?\n){2,}/);
+        const slides = splitSlides(lyrics.value);
         if (index >= 0 && index < slides.length) {
             slides[index] = newText;
             lyrics.value = slides.join('\n\n');
@@ -57,12 +85,27 @@ export const useLyrics = defineStore('lyrics', () => {
     }
 
     function fileToBase64(file) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('파일 읽기 실패'));
             reader.readAsDataURL(file);
         })
     }
+
+    // 상태 변경 시 localStorage에 자동 저장 (500ms debounce)
+    // bgDataUrl은 용량이 크므로 저장 제외
+    watch(
+        [lyrics, title, () => ({...settings})],
+        () => {
+            debouncedSave({
+                lyrics: lyrics.value,
+                title: title.value,
+                settings: {...settings},
+            })
+        },
+        {deep: true}
+    )
 
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,

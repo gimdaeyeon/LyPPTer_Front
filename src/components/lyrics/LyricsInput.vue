@@ -30,9 +30,7 @@ const localLyrics = ref('');
 async function setCurrentSlide() {
   if (!textarea.value) return
   const pos = textarea.value.textarea.selectionStart
-  /* 커서 앞 문자열 */
   const before = localLyrics.value.slice(0, pos)
-  /* 구분자(엔터 2줄↑)로 split → 배열 길이 - 1 == 슬라이드 인덱스 */
   currentSlideIdx.value = before.split(/(?:\r?\n){2,}/).length - 1;
 }
 
@@ -54,7 +52,4 @@ watch(lyrics, (newLyrics) => {
 </script>
 
 <style scoped>
-.text-area::-webkit-scrollbar {
-//border-radius: 12px; display: none;
-}
 </style>
