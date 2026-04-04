@@ -82,6 +82,7 @@ const emit = defineEmits([
   'update:positionX', 'update:positionY',
   'update:textBoxWidth', 'update:textBoxHeight',
   'update:lyrics',
+  'snapshot',
 ])
 
 /* ---------- 선택 상태 ---------------------------------------------------- */
@@ -92,6 +93,19 @@ function onBgClick() {
   isSelected.value = false
   isEditing.value = false
 }
+
+function onKeydown(e) {
+  if (e.key === 'Escape' && props.interactive) {
+    if (isEditing.value) {
+      isEditing.value = false
+    } else if (isSelected.value) {
+      isSelected.value = false
+    }
+  }
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 function onBoxClick() {
   isSelected.value = true
@@ -135,6 +149,7 @@ const {isDragging, onPointerDown: dragPointerDown, cleanup: cleanupDrag} = useTe
 
 function onBoxPointerDown(e) {
   if (!isSelected.value || isEditing.value) return
+  emit('snapshot')
   dragPointerDown(e, props.settings.positionX, props.settings.positionY)
 }
 
@@ -150,6 +165,7 @@ const {isResizing, onPointerDown: resizePointerDown, cleanup: cleanupResize} = u
 )
 
 function onResizePointerDown(e, dir) {
+  emit('snapshot')
   resizePointerDown(e, dir, {
     width: props.settings.textBoxWidth,
     height: props.settings.textBoxHeight,
@@ -226,6 +242,7 @@ const boxStyle = computed(() => {
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'center',
+    overflow: 'hidden',
   }
 })
 </script>

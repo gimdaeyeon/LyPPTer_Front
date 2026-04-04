@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(wc -l src/**/*.vue src/**/*.js)"
+      "Bash(wc -l src/**/*.vue src/**/*.js)",
+      "Bash(find /d/personal_project/contTbase/client/src -type f \\\\\\( -name \"*.js\" -o -name \"*.vue\" \\\\\\) -exec wc -l {} +)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

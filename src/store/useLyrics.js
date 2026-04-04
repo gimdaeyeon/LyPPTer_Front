@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
 import {computed, reactive, ref, watch} from "vue";
 import {makeThumbDataUrl} from "@/utils/imageUtils.js";
-import {splitSlides, normalizeNewlines} from "@/utils/lyricsUtils.js";
+import {splitSlides} from "@/utils/lyricsUtils.js";
+import {useHistory} from "@/composables/useHistory.js";
 import {
     DEFAULT_FONT_SIZE_PT, DEFAULT_POSITION_X, DEFAULT_POSITION_Y,
     DEFAULT_TEXT_BOX_WIDTH, DEFAULT_TEXT_BOX_HEIGHT, DEFAULT_LINE_SPACING,
@@ -69,11 +70,6 @@ export const useLyrics = defineStore('lyrics', () => {
         splitSlides(lyrics.value).map(line => line.trim())
     );
 
-    // 3줄 이상 연속 줄바꿈을 2줄로 정규화 (슬라이드 구분자 오염 방지)
-    watch(lyrics, (newLyrics) => {
-        lyrics.value = normalizeNewlines(newLyrics);
-    });
-
     const textBold = computed(() => settings.isTextBold ? 'bold' : 'normal');
 
     function updateSlideText(index, newText) {
@@ -83,6 +79,67 @@ export const useLyrics = defineStore('lyrics', () => {
             lyrics.value = slides.join('\n\n');
         }
     }
+
+    /* ---------- 슬라이드 관리 --------------------------------------------- */
+    function deleteSlide(index) {
+        const slides = splitSlides(lyrics.value);
+        if (slides.length <= 1) return // 최소 1개 슬라이드 유지
+        slides.splice(index, 1)
+        lyrics.value = slides.join('\n\n')
+        if (currentSlideIdx.value >= slides.length) {
+            currentSlideIdx.value = slides.length - 1
+        }
+    }
+
+    function duplicateSlide(index) {
+        const slides = splitSlides(lyrics.value);
+        if (index >= 0 && index < slides.length) {
+            slides.splice(index + 1, 0, slides[index])
+            lyrics.value = slides.join('\n\n')
+            currentSlideIdx.value = index + 1
+        }
+    }
+
+    function moveSlide(fromIndex, toIndex) {
+        const slides = splitSlides(lyrics.value);
+        if (fromIndex < 0 || fromIndex >= slides.length) return
+        if (toIndex < 0 || toIndex >= slides.length) return
+        if (fromIndex === toIndex) return
+        const [moved] = slides.splice(fromIndex, 1)
+        slides.splice(toIndex, 0, moved)
+        lyrics.value = slides.join('\n\n')
+        currentSlideIdx.value = toIndex
+    }
+
+    /* ---------- Undo/Redo ------------------------------------------------ */
+    const history = useHistory(
+        () => ({lyrics: lyrics.value, title: title.value, settings: {...settings}}),
+        (state) => {
+            lyrics.value = state.lyrics
+            title.value = state.title
+            Object.assign(settings, state.settings)
+        }
+    )
+
+    // settings/lyrics/title 변경 시 자동 스냅샷 (debounced)
+    let historyTimer = null
+    watch(
+        [lyrics, title, () => ({...settings})],
+        () => {
+            if (history.isRestoring()) return
+            clearTimeout(historyTimer)
+            historyTimer = setTimeout(() => history.pushState(), 400)
+        },
+        {deep: true}
+    )
+
+    /** 드래그/리사이즈 시작 전 즉시 스냅샷 (debounce 무시) */
+    function snapshotNow() {
+        clearTimeout(historyTimer)
+        history.pushState()
+    }
+
+    /* -------------------------------------------------------------------- */
 
     function fileToBase64(file) {
         return new Promise((resolve, reject) => {
@@ -109,6 +166,10 @@ export const useLyrics = defineStore('lyrics', () => {
 
     return {
         title, lyrics, currentSlideIdx, settings, currentLyrics,
-        lyricsSlides, bgFile, bgDataUrl, setBgFile, textBold, thumbBgDataUrl, updateSlideText,
+        lyricsSlides, bgFile, bgDataUrl, setBgFile, textBold, thumbBgDataUrl,
+        updateSlideText, deleteSlide, duplicateSlide, moveSlide,
+        undo: history.undo, redo: history.redo,
+        canUndo: history.canUndo, canRedo: history.canRedo,
+        snapshotNow,
     }
 });

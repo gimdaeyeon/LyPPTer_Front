@@ -19,6 +19,7 @@
                   @update:textBoxWidth="v => lyricsStore.settings.textBoxWidth = v"
                   @update:textBoxHeight="v => lyricsStore.settings.textBoxHeight = v"
                   @update:lyrics="v => lyricsStore.updateSlideText(lyricsStore.currentSlideIdx, v)"
+                  @snapshot="lyricsStore.snapshotNow()"
               />
             </div>
           </div>
@@ -36,9 +37,12 @@ import SlidePreview from "@/components/SlidePreview.vue";
 import CustomInput from "@/components/common/tag/CustomInput.vue";
 import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
+import {useKeyboardShortcuts} from "@/composables/useKeyboardShortcuts.js";
 
 const lyricsStore = useLyrics();
 const {currentLyrics, bgDataUrl, title} = storeToRefs(lyricsStore);
+
+useKeyboardShortcuts();
 </script>
 
 <style scoped>

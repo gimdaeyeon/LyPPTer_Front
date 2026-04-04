@@ -16,6 +16,7 @@
 import TextArea from "@/components/common/tag/TextArea.vue";
 
 import {useLyrics} from "@/store/useLyrics.js";
+import {normalizeNewlines} from "@/utils/lyricsUtils.js";
 import {storeToRefs} from "pinia";
 import {onMounted, ref, useTemplateRef, watch} from "vue";
 
@@ -25,6 +26,7 @@ const textarea = useTemplateRef('textarea');
 // pinia 상태 직접연결시 컴포넌트 재렌더링에의해 키보드 커서가 초기화되는 현상 발생
 // 해당 변수를 둠으로써 커서위치 값에 영향이 가지 않도록 처리
 const localLyrics = ref('');
+let isSyncingFromStore = false; // 외부 동기화 시 normalizeNewlines 재적용 방지 플래그
 
 // 가사 입력창에서 입력 커서의 이동에 따라 현재 슬라이드 번호를 변경하는 함수
 async function setCurrentSlide() {
@@ -39,14 +41,17 @@ onMounted(() => {
 });
 
 watch(localLyrics, (newLyrics) => {
-  lyrics.value = newLyrics;
-});
+  if (isSyncingFromStore) return;
+  lyrics.value = normalizeNewlines(newLyrics);
+}, { flush: 'sync' });
 
 // 외부에서 lyrics가 변경된 경우 (SlidePreview 인라인 편집 등)
 // IME 조합 중에는 localLyrics를 덮어쓰지 않음 (한글 입력 끊김 방지)
 watch(lyrics, (newLyrics) => {
   if (newLyrics !== localLyrics.value && !textarea.value?.composing) {
+    isSyncingFromStore = true;
     localLyrics.value = newLyrics;
+    isSyncingFromStore = false;
   }
 });
 

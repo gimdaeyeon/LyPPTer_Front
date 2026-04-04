@@ -4,7 +4,7 @@
  */
 
 export function splitSlides(lyrics) {
-    return lyrics.trim().split(/(?:\r?\n){2,}/)
+    return lyrics.replace(/\r\n/g, '\n').trim().split('\n\n')
 }
 
 export function normalizeNewlines(text) {
