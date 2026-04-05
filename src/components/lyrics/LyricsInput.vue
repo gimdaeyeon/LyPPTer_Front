@@ -1,5 +1,5 @@
 <template>
-  <div class="flex max-w-[480px] flex-wrap gap-4 px-4 py-3 h-full">
+  <div class="flex flex-wrap gap-4 px-4 py-3 h-full">
     <label class="flex flex-col min-w-40 flex-1 h-full">
         <TextArea ref="textarea" @keyup="setCurrentSlide" @click="setCurrentSlide"
                   placeholder="Type or paste lyrics here..."

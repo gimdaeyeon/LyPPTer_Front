@@ -1,12 +1,17 @@
 <template>
-  <div class="overflow-hidden flex-[20_1_0]">
-    <div class="h-full border-r border-gray-200">
-      <div class="space-y-2 p-2 max-h-[72vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden">
-        <div v-for="(slide, i) in lyricsSlides" :key="i" class="relative">
-          <!-- 드롭 인디케이터 (위쪽) -->
+  <div :class="horizontal
+    ? 'overflow-hidden border-b border-gray-200'
+    : 'overflow-hidden flex-[20_1_0]'">
+    <div :class="horizontal ? '' : 'h-full border-r border-gray-200'">
+      <div :class="horizontal
+        ? 'flex gap-2 p-2 overflow-x-auto [&::-webkit-scrollbar]:hidden'
+        : 'space-y-2 p-2 max-h-[72vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden'">
+        <div v-for="(slide, i) in lyricsSlides" :key="i"
+             :class="horizontal ? 'relative flex-shrink-0 w-28' : 'relative'">
+          <!-- 드롭 인디케이터 (위쪽/왼쪽) -->
           <div
               v-if="showIndicator(i, 'before')"
-              class="drop-indicator"
+              :class="horizontal ? 'drop-indicator-h drop-indicator-h-left' : 'drop-indicator'"
           />
 
           <SlideThumb
@@ -30,10 +35,10 @@
               :ref="el => (thumbEls[i] = el?.$el ?? el)"
           />
 
-          <!-- 드롭 인디케이터 (아래쪽, 마지막 슬라이드) -->
+          <!-- 드롭 인디케이터 (아래쪽/오른쪽, 마지막 슬라이드) -->
           <div
               v-if="showIndicator(i, 'after')"
-              class="drop-indicator drop-indicator-bottom"
+              :class="horizontal ? 'drop-indicator-h drop-indicator-h-right' : 'drop-indicator drop-indicator-bottom'"
           />
         </div>
       </div>
@@ -46,6 +51,10 @@ import {useLyrics} from '@/store/useLyrics.js';
 import {storeToRefs} from 'pinia';
 import SlideThumb from "@/components/SlideThumb.vue";
 import {nextTick, ref, watch} from "vue";
+
+defineProps({
+  horizontal: { type: Boolean, default: false }
+})
 
 const lyricsStore = useLyrics();
 const {lyricsSlides, currentSlideIdx, thumbBgDataUrl, lyrics} = storeToRefs(lyricsStore);
@@ -146,5 +155,25 @@ function showIndicator(i, position) {
 @keyframes pulse-indicator {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
+}
+
+.drop-indicator-h {
+  width: 3px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  background: var(--color-primary, #00AB6B);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--color-primary, #00AB6B);
+  animation: pulse-indicator 1s ease-in-out infinite;
+  z-index: 10;
+}
+
+.drop-indicator-h-left {
+  left: -3px;
+}
+
+.drop-indicator-h-right {
+  right: -3px;
 }
 </style>

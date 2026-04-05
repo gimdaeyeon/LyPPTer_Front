@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-2 px-4 py-3 h-full">
+  <div class="flex flex-wrap gap-2 px-4 py-3 h-full max-h-[60vh] overflow-y-auto lg:max-h-none lg:overflow-visible">
     <div class="w-full">
       <label class="text-sm font-medium">Font Size (pt)</label>
       <input type="number" class="input px-3 mt-2" v-model="fontSize" min="8" max="120" step="1"/>

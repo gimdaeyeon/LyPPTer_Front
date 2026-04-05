@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-content-container flex flex-col w-[360px]">
+  <div class="layout-content-container flex flex-col w-full">
     <div class="pb-3">
       <div class="flex border-b border-gray-200 px-4 gap-8 tracking-[0.015em]">
         <a class="lyrics-mode-tab"
