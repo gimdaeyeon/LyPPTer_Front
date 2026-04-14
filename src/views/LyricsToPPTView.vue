@@ -42,7 +42,7 @@
       <SlidePreviewList v-if="isMobile" :horizontal="true"/>
 
       <!-- Lyrics editor panel -->
-      <div class="w-full sm:w-[320px] lg:w-[360px] sm:flex-shrink-0 flex-1 sm:flex-initial overflow-hidden">
+      <div class="w-full sm:w-[320px] lg:w-[360px] sm:flex-shrink-0 flex-1 sm:flex-initial overflow-y-auto">
         <LyricsArea/>
       </div>
     </div>
