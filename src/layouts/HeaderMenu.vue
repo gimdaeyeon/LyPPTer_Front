@@ -1,6 +1,7 @@
 <template>
   <header class="flex items-center justify-between whitespace-nowrap border-b border-b-gray-200 px-4 sm:px-6 lg:px-10 py-3">
-    <router-link to="/" class="flex items-center gap-4 cursor-pointer">
+    <router-link to="/" class="flex items-center gap-2 cursor-pointer">
+      <img src="/lyppter.png" alt="Lyppter" class="h-8 w-auto" />
       <h2 class="text-lg font-[1000] leading-tight tracking-[-0.015em]">Lyppter</h2>
     </router-link>
     <div class="flex flex-1 justify-end gap-8">
