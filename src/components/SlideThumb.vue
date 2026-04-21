@@ -2,7 +2,7 @@
 <template>
   <div
       class="group relative rounded-md cursor-pointer select-none"
-      :class="active ? 'ring-2 ring-primary' : 'ring-1 ring-gray-300'"
+      :class="active ? 'ring-2 ring-primary' : 'ring-1 ring-gray-300 dark:ring-gray-600'"
       draggable="true"
       @dragstart="$emit('dragstart', $event, index)"
       @dragover.prevent="$emit('dragover', $event, index)"

@@ -1,7 +1,7 @@
 <template>
   <div class="layout-content-container flex flex-col w-full">
     <div class="pb-3">
-      <div class="flex border-b border-gray-200 px-4 gap-8 tracking-[0.015em]">
+      <div class="flex border-b border-gray-200 dark:border-gray-700 px-4 gap-8 tracking-[0.015em]">
         <a class="lyrics-mode-tab"
            :class="{'mode-on':!isSetMode}"
            @click.prevent="isSetMode=false"
@@ -32,7 +32,3 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const isSetMode = ref(false);
 </script>
-
-<style scoped>
-
-</style>

@@ -5,7 +5,7 @@
                      @click="model=direction"
       />
     </template>
-    <button class="icon-btn border border-gray-200 ml-2"
+    <button class="icon-btn border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 ml-2"
             :class="{'selected': isTextBold}"
             @click="isTextBold = !isTextBold"
     >

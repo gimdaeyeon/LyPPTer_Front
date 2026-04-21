@@ -1,8 +1,8 @@
 <template>
   <div :class="horizontal
-    ? 'overflow-hidden border-b border-gray-200'
+    ? 'overflow-hidden border-b border-gray-200 dark:border-gray-700'
     : 'overflow-hidden flex-[20_1_0]'">
-    <div :class="horizontal ? '' : 'h-full border-r border-gray-200'">
+    <div :class="horizontal ? '' : 'h-full border-r border-gray-200 dark:border-gray-700'">
       <div :class="horizontal
         ? 'flex gap-2 p-2 overflow-x-auto [&::-webkit-scrollbar]:hidden'
         : 'space-y-2 p-2 max-h-[72vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden'">
@@ -58,14 +58,9 @@ defineProps({
 
 const lyricsStore = useLyrics();
 const {lyricsSlides, currentSlideIdx, thumbBgDataUrl, lyrics} = storeToRefs(lyricsStore);
-// 썸네일 엘리먼트 배열을 담을 ref
 const thumbEls = ref([]);
 
-// 활성 슬라이드가 바뀔 때 자동 스크롤
-/* 길이 변화 → 새 슬라이드 등장 */
 watch(() => lyricsSlides.value.length, doScroll, {flush: 'post'})
-
-/* 커서 이동 등으로 인덱스만 변할 때(이미 존재하는 노드) */
 watch(currentSlideIdx, doScroll, {flush: 'post', immediate: false})
 
 function doScroll() {
@@ -75,7 +70,6 @@ function doScroll() {
   })
 }
 
-/* ---------- 슬라이드 삭제/복제 ----------------------------------------- */
 function onDelete(index) {
   lyricsStore.snapshotNow()
   lyricsStore.deleteSlide(index)
@@ -86,7 +80,6 @@ function onDuplicate(index) {
   lyricsStore.duplicateSlide(index)
 }
 
-/* ---------- 드래그 앤 드롭 (슬라이드 순서 변경) -------------------------- */
 const dragFromIdx = ref(null)
 const dropTargetIdx = ref(null)
 
@@ -115,14 +108,12 @@ function onDrop(e, toIndex) {
   onDragEnd()
 }
 
-/** 드롭 인디케이터 표시 여부 */
 function showIndicator(i, position) {
   if (dragFromIdx.value === null || dropTargetIdx.value === null) return false
   if (dropTargetIdx.value === dragFromIdx.value) return false
   if (position === 'before') {
     return dropTargetIdx.value === i && i < dragFromIdx.value
   }
-  // 'after': 마지막 슬라이드 아래에 표시할 때
   return dropTargetIdx.value === i && i > dragFromIdx.value
 }
 </script>

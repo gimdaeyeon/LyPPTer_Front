@@ -14,14 +14,14 @@
       <div class="overflow-hidden flex-shrink-0 sm:flex-shrink sm:flex-1 lg:flex-[80_1_0]">
         <div class="h-full p-2 sm:p-4">
           <CustomInput
-              class="flex h-10 w-full rounded-md border border-input border-gray-200 bg-background px-3
+              class="flex h-10 w-full rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3
               py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-1 disabled:cursor-not-allowed
-              disabled:opacity-50 text-base sm:text-lg mb-2 sm:mb-4"
+              disabled:opacity-50 text-base sm:text-lg mb-2 sm:mb-4 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               v-model="title"
               placeholder="Enter presentation title"
               type="text"
           />
-          <div class="aspect-video relative overflow-hidden rounded-lg border border-gray-200">
+          <div class="aspect-video relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
             <SlidePreview
                 :lyrics="currentLyrics"
                 :settings="lyricsStore.settings"
@@ -66,7 +66,3 @@ const {isMobile, isTablet, isDesktop} = useBreakpoint();
 
 useKeyboardShortcuts();
 </script>
-
-<style scoped>
-
-</style>

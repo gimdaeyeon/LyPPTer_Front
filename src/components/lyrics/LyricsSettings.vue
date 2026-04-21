@@ -1,34 +1,34 @@
 <template>
   <div class="flex flex-wrap gap-2 px-4 py-3 h-full max-h-[60vh] overflow-y-auto lg:max-h-none lg:overflow-visible">
     <div class="w-full">
-      <label class="text-sm font-medium">Font Size (pt)</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Font Size (pt)</label>
       <input type="number" class="input px-3 mt-2" v-model="fontSize" min="8" max="120" step="1"/>
     </div>
     <div class="w-full">
-      <label class="text-sm font-medium">Text Color</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Text Color</label>
       <div class="flex gap-2 mt-2">
         <input type="color" class="color-input" v-model="textColor"/>
         <input type="text" class="text-input" v-model="textColor">
       </div>
     </div>
     <div class="w-full">
-      <label class="text-sm font-medium">Text Formatting</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Text Formatting</label>
       <TextFormatter v-model="textAlign" v-model:isTextBold="isTextBold"/>
     </div>
     <FontDropdown v-model="fontFamily"/>
     <div class="w-full">
-      <label class="text-sm font-medium">Line Spacing</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Line Spacing</label>
       <input type="number" class="input px-3 mt-2" v-model="lineSpacing" min="0.5" max="3.0" step="0.1"/>
     </div>
     <div class="w-full">
-      <label class="text-sm font-medium">Position (inches)</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Position (inches)</label>
       <div class="flex space-x-2">
         <LabeledInput v-model="positionX" label="X" type="number" step="0.1"/>
         <LabeledInput v-model="positionY" label="Y" type="number" step="0.1"/>
       </div>
     </div>
     <div class="w-full">
-      <label class="text-sm font-medium">Text Box Size (inches)</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Text Box Size (inches)</label>
       <div class="flex space-x-2">
         <LabeledInput v-model="textBoxWidth" label="W" type="number" step="0.1"/>
         <LabeledInput v-model="textBoxHeight" label="H" type="number" step="0.1"/>

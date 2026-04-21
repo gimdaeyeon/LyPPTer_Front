@@ -3,12 +3,12 @@
 <template>
   <div class="w-full">
     <div class="flex justify-between items-center">
-      <label class="text-sm font-medium">Background</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Background</label>
       <div>
-        <button class="icon-btn" :class="{selected: !isBgImg}" @click="emit('update:isBgImg', false)">
+        <button class="icon-btn border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300" :class="{selected: !isBgImg}" @click="emit('update:isBgImg', false)">
           <font-awesome-icon :icon="['fas', 'palette']"/>
         </button>
-        <button class="icon-btn" :class="{selected: isBgImg}" @click="emit('update:isBgImg', true)">
+        <button class="icon-btn border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300" :class="{selected: isBgImg}" @click="emit('update:isBgImg', true)">
           <font-awesome-icon :icon="['far', 'image']"/>
         </button>
       </div>
@@ -70,5 +70,9 @@ function clearImage() {
 
 .selected > svg {
     color: var(--color-primary);
+}
+
+:global(.dark) .selected {
+    background-color: #003d28;
 }
 </style>
