@@ -5,6 +5,18 @@
       <h2 class="text-lg font-[1000] leading-tight tracking-[-0.015em] text-gray-900 dark:text-gray-100">Lyppter</h2>
     </router-link>
     <div class="flex flex-1 justify-end gap-3">
+      <!-- 사용법(인트로 팝업) 다시 보기 -->
+      <button
+        @click="openIntro"
+        class="icon-btn flex items-center justify-center text-gray-500 dark:text-gray-400"
+        title="사용법 보기"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.6 9.3a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.2.9-1.2 1.7v.5"/>
+          <path stroke-linecap="round" d="M12 17h.01"/>
+        </svg>
+      </button>
       <!-- 다크모드 토글 -->
       <button
         @click="toggleTheme"
@@ -33,6 +45,8 @@
 <script setup>
 import {createPPt} from "@/services/pptService.js";
 import {useTheme} from "@/composables/useTheme.js";
+import {useIntro} from "@/composables/useIntro.js";
 
 const {isDark, toggleTheme} = useTheme()
+const {openIntro} = useIntro()
 </script>
