@@ -48,7 +48,7 @@ export function useKeyboardShortcuts() {
         // Ctrl+E — Export
         if (ctrl && e.key === 'e') {
             e.preventDefault()
-            createPPt()
+            createPPt('shortcut')
             return
         }
 

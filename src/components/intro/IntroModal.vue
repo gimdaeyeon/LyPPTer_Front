@@ -1,7 +1,7 @@
 <!-- src/components/intro/IntroModal.vue -->
 <!-- 첫 방문 인트로 팝업: 사용법 4단계를 모션으로 보여준다 (App.vue에서 열릴 때만 지연 로드) -->
 <template>
-  <div class="backdrop" :class="{closing}" @click.self="close">
+  <div class="backdrop" :class="{closing}" @click.self="close('backdrop')">
     <div ref="dialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="intro-title" tabindex="-1">
       <h2 id="intro-title" class="sr-only">Lyppter 사용법</h2>
       <ol class="sr-only">
@@ -17,7 +17,7 @@
           <i><b :ref="el => (barFills[i] = el)"/></i>
         </button>
       </div>
-      <button class="close-btn" aria-label="닫기" @click="close">
+      <button class="close-btn" aria-label="닫기" @click="close('x')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
 
@@ -43,7 +43,7 @@
 
       <div class="foot">
         <button class="sub-btn" @click="onSubAction">{{ subLabel }}</button>
-        <button class="start-btn" :class="{pulse: ended}" @click="close">
+        <button class="start-btn" :class="{pulse: ended}" @click="close('start')">
           시작하기
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
@@ -56,6 +56,7 @@
 import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
 import IntroStage from '@/components/intro/IntroStage.vue'
 import {INTRO_RANGE, INTRO_STEPS, INTRO_STILLS, STAGE_W} from '@/components/intro/introMotion.js'
+import {track} from '@/utils/analytics.js'
 
 const emit = defineEmits(['close'])
 
@@ -152,12 +153,15 @@ const subLabel = computed(() => {
 function onSubAction() {
   if (ended.value) goStep(0)
   else if (reduceMotion) goStep(stillIdx.value + 1)
-  else close()
+  else close('skip')
 }
 
-function close() {
+// via: 'start' 시작하기 | 'skip' 건너뛰기 | 'x' 닫기 버튼 | 'esc' | 'backdrop' 바깥 클릭 (통계용)
+function close(via) {
   if (closing.value) return
   closing.value = true
+  // 어디까지 보고 닫았는지 (끝까지 봤으면 'end')
+  track('intro-close', {via, step: ended.value ? 'end' : String(currentStep() + 1)})
   playing = false
   cancelAnimationFrame(rafId)
   setTimeout(() => emit('close'), reduceMotion ? 0 : 180) // 닫힘 애니메이션이 끝난 뒤
@@ -223,7 +227,7 @@ function onKeydown(e) {
   e.stopPropagation()
   if (e.key === 'Escape') {
     e.preventDefault()
-    close()
+    close('esc')
   } else if (e.key === 'Tab') {
     trapFocus(e)
   } else if (e.key === 'ArrowLeft') {

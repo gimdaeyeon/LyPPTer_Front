@@ -2,6 +2,7 @@ import {ref} from 'vue'
 import {SLIDE_W, SLIDE_H} from '@/utils/pptUnits.js'
 import {round2} from '@/utils/math.js'
 import {usePointerTrack} from '@/composables/usePointerTrack.js'
+import {trackOnce} from '@/utils/analytics.js'
 
 /**
  * 텍스트박스 드래그 composable
@@ -20,6 +21,7 @@ export function useTextBoxDrag(containerRef, onUpdate, getBoxDims = null, snapGu
     function onPointerDown(e, posX, posY) {
         if (e.button !== 0) return
         isDragging.value = true
+        let moved = false
         startX = e.clientX
         startY = e.clientY
         startPosX = posX
@@ -40,10 +42,12 @@ export function useTextBoxDrag(containerRef, onUpdate, getBoxDims = null, snapGu
                     newX = snappedX
                     newY = snappedY
                 }
+                moved = true
                 onUpdate(round2(newX), round2(newY))
             },
             () => {
                 isDragging.value = false
+                if (moved) trackOnce('textbox-drag')
                 if (snapGuides) snapGuides.reset()
             }
         )

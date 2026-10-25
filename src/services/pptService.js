@@ -3,8 +3,10 @@ import {useLyrics} from "@/store/useLyrics.js";
 import {storeToRefs} from "pinia";
 import {toRefs} from "vue";
 import {getDate} from "@/utils/dateUtils.js";
+import {track} from "@/utils/analytics.js";
 
-export async function createPPt() {
+/** @param {'button'|'shortcut'} via - 내보내기를 누른 경로 (통계용) */
+export async function createPPt(via = 'button') {
     try {
         const lyricsStore = useLyrics();
         const {lyricsSlides, title, bgDataUrl} = storeToRefs(lyricsStore);
@@ -54,7 +56,14 @@ export async function createPPt() {
         })
 
         await pres.writeFile({fileName: title.value || getDate()});
+        track('ppt-export', {
+            slides: lyricsSlides.value.length,
+            bg: isBgImg.value && bgDataUrl.value ? 'image' : 'color',
+            font: fontFamily.value,
+            via,
+        });
     } catch (err) {
+        track('ppt-export-error', {message: String(err?.message ?? err).slice(0, 100)});
         console.error('PPT 생성 실패:', err)
         alert('PPT 파일 생성 중 오류가 발생했습니다.')
     }

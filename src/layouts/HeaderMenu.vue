@@ -7,7 +7,7 @@
     <div class="flex flex-1 justify-end gap-3">
       <!-- 사용법(인트로 팝업) 다시 보기 -->
       <button
-        @click="openIntro"
+        @click="openIntro('help')"
         class="icon-btn flex items-center justify-center text-gray-500 dark:text-gray-400"
         title="사용법 보기"
       >
@@ -33,7 +33,7 @@
           <path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
       </button>
-      <button @click="createPPt"
+      <button @click="createPPt('button')"
               class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 px-4 bg-primary hover:bg-[#009960] text-white text-sm font-bold leading-normal tracking-[0.015em]"
       >
         <span class="truncate">Export</span>

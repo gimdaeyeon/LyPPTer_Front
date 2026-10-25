@@ -66,6 +66,7 @@
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from 'vue'
 import {fontFamilies} from '@/utils/fontFamily.js'
 import {loadFont, loadedFonts} from '@/composables/useFontLoader.js'
+import {track} from '@/utils/analytics.js'
 
 const props = defineProps({
     modelValue: {type: String, required: true},
@@ -153,6 +154,7 @@ async function selectFont(font) {
     // 폰트 로드 완료 후 emit → 입력창에서 fallback 깜빡임 방지
     await loadFont(font)
     emit('update:modelValue', font.name)
+    track('font-change', {font: font.name})
     isLoadingFont.value = false
 }
 

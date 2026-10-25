@@ -3,6 +3,7 @@ import {computed, reactive, ref, watch} from "vue";
 import {makeThumbDataUrl} from "@/utils/imageUtils.js";
 import {splitSlides} from "@/utils/lyricsUtils.js";
 import {useHistory} from "@/composables/useHistory.js";
+import {track} from "@/utils/analytics.js";
 import {
     DEFAULT_FONT_SIZE_PT, DEFAULT_POSITION_X, DEFAULT_POSITION_Y,
     DEFAULT_TEXT_BOX_WIDTH, DEFAULT_TEXT_BOX_HEIGHT, DEFAULT_LINE_SPACING,
@@ -60,6 +61,7 @@ export const useLyrics = defineStore('lyrics', () => {
         bgFile.value = file;
         bgDataUrl.value = file ? await fileToBase64(file) : null;
         thumbBgDataUrl.value = file ? await makeThumbDataUrl(bgDataUrl.value) : null;
+        if (file) track('bg-image');
     }
 
     const currentLyrics = computed(() => {

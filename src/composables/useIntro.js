@@ -1,4 +1,5 @@
 import {ref} from 'vue'
+import {track} from '@/utils/analytics.js'
 
 const STORAGE_KEY = 'lyppter_intro_seen_v1'
 
@@ -10,8 +11,10 @@ const isIntroOpen = ref(false)
  * - 헤더의 ? 버튼으로 언제든 다시 열 수 있다
  */
 export function useIntro() {
-    function openIntro() {
+    /** @param {'first-visit'|'help'} trigger - 자동으로 떴는지, 헤더 도움말 버튼으로 열었는지 (통계용) */
+    function openIntro(trigger = 'help') {
         isIntroOpen.value = true
+        track('intro-open', {trigger})
     }
 
     function closeIntro() {
@@ -20,7 +23,7 @@ export function useIntro() {
     }
 
     function openIntroIfFirstVisit() {
-        if (!localStorage.getItem(STORAGE_KEY)) openIntro()
+        if (!localStorage.getItem(STORAGE_KEY)) openIntro('first-visit')
     }
 
     return {isIntroOpen, openIntro, closeIntro, openIntroIfFirstVisit}
