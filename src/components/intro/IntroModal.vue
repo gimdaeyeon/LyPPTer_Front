@@ -21,9 +21,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
 
-      <div ref="stageBox" class="stage-box">
-        <IntroStage ref="stage" :style="{transform: `scale(${scale})`}"/>
-        <!-- 스토리처럼 좌우를 눌러 섹션 이동 (왼쪽 1/3은 이전, 나머지는 다음) -->
+      <div ref="stageBox" class="stage-box"
+           @pointerdown="onSwipeStart" @pointermove="onSwipeMove" @pointerup="onSwipeEnd"
+           @pointercancel="resetSwipe" @click.capture="onStageClick">
+        <!-- 쓰는 동안 화면이 손가락을 살짝 따라온다 -->
+        <div class="swipe-layer" :class="{dragging}" :style="dragX ? {transform: `translateX(${dragX}px)`} : null">
+          <IntroStage ref="stage" :style="{transform: `scale(${scale})`}"/>
+        </div>
+        <!-- 스토리처럼 좌우를 눌러 섹션 이동 (왼쪽 1/3은 이전, 나머지는 다음). 터치 기기에서는 옆으로 쓸어도 된다 -->
         <button class="tap tap-prev" aria-label="이전 단계" @click="prevStep">
           <span class="tap-hint">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
@@ -158,6 +163,58 @@ function close() {
   setTimeout(() => emit('close'), reduceMotion ? 0 : 180) // 닫힘 애니메이션이 끝난 뒤
 }
 
+/* ---------- 스와이프 (터치) --------------------------------------------- */
+// 손가락으로 왼쪽으로 쓸면 다음, 오른쪽으로 쓸면 이전 단계로 간다. 마우스는 기존처럼 클릭으로만 넘긴다
+const SWIPE_MIN = 40 // 이만큼(px) 이상 가로로 쓸어야 넘어간다
+const dragX = ref(0)
+const dragging = ref(false)
+let swipe = null
+let suppressClick = false
+
+function onSwipeStart(e) {
+  if (e.pointerType === 'mouse' || !e.isPrimary) return
+  swipe = {id: e.pointerId, x: e.clientX, y: e.clientY}
+}
+
+function onSwipeMove(e) {
+  if (!swipe || e.pointerId !== swipe.id) return
+  const dx = e.clientX - swipe.x
+  if (!dragging.value && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - swipe.y)) dragging.value = true
+  if (dragging.value && !reduceMotion) dragX.value = dx * 0.35
+}
+
+function onSwipeEnd(e) {
+  if (!swipe || e.pointerId !== swipe.id) return
+  const dx = e.clientX - swipe.x
+  const dy = e.clientY - swipe.y
+  const wasDragging = dragging.value
+  resetSwipe()
+  // 가로로 끌기 시작했다면 짧게 끝나도 손을 뗄 때 따라오는 탭으로 처리하지 않는다
+  if (wasDragging) {
+    suppressClick = true
+    setTimeout(() => (suppressClick = false), 400)
+  }
+  if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * 1.2) return
+  if (dx < 0) {
+    if (!ended.value) nextStep()
+  } else {
+    prevStep()
+  }
+}
+
+function resetSwipe() {
+  swipe = null
+  dragging.value = false
+  dragX.value = 0
+}
+
+function onStageClick(e) {
+  if (!suppressClick) return
+  suppressClick = false
+  e.stopPropagation()
+  e.preventDefault()
+}
+
 /* ---------- 키보드 ------------------------------------------------------ */
 // 팝업이 떠 있는 동안 앱 전역 단축키(Delete 슬라이드 삭제, 방향키 이동 등)가 뒤에서 동작하지 않도록
 // 캡처 단계에서 먼저 받아 전파를 막는다. Tab·Enter 같은 브라우저 기본 동작은 그대로 유지된다
@@ -266,6 +323,20 @@ onBeforeUnmount(() => {
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  /* 가로 쓸기는 직접 처리하고, 브라우저의 가로 제스처(뒤로 가기 등)는 막는다 */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.swipe-layer {
+  position: absolute;
+  inset: 0;
+  transition: transform .25s cubic-bezier(.2, .9, .3, 1);
+}
+
+.swipe-layer.dragging {
+  transition: none;
 }
 
 .bars {
@@ -469,7 +540,8 @@ onBeforeUnmount(() => {
     animation: none;
   }
 
-  .tap-hint {
+  .tap-hint,
+  .swipe-layer {
     transition: none;
   }
 }
