@@ -23,10 +23,13 @@
 
       <div ref="stageBox" class="stage-box"
            @pointerdown="onSwipeStart" @pointermove="onSwipeMove" @pointerup="onSwipeEnd"
-           @pointercancel="resetSwipe" @click.capture="onStageClick">
-        <!-- 쓰는 동안 화면이 손가락을 살짝 따라온다 -->
-        <div class="swipe-layer" :class="{dragging}" :style="dragX ? {transform: `translateX(${dragX}px)`} : null">
-          <IntroStage ref="stage" :style="{transform: `scale(${scale})`}"/>
+           @pointercancel="onSwipeCancel" @click.capture="onStageClick">
+        <!-- 캐러셀: 끄는 동안 지금 장면이 손가락을 따라가고, 옆 단계 장면(peek)이 함께 밀려 들어온다 -->
+        <div class="pane" :class="{settling}" :style="mainPaneStyle">
+          <IntroStage ref="stage" :style="stageStyle"/>
+        </div>
+        <div class="pane" :class="{settling}" :style="peekPaneStyle">
+          <IntroStage ref="peek" :style="stageStyle"/>
         </div>
         <!-- 스토리처럼 좌우를 눌러 섹션 이동 (왼쪽 1/3은 이전, 나머지는 다음). 터치 기기에서는 옆으로 쓸어도 된다 -->
         <button class="tap tap-prev" aria-label="이전 단계" @click="prevStep">
@@ -106,6 +109,7 @@ function play() {
 }
 
 function goStep(i) {
+  if (settling.value) return
   if (reduceMotion) {
     stillIdx.value = i
     t = INTRO_STILLS[i]
@@ -168,48 +172,136 @@ function close(via) {
 }
 
 /* ---------- 스와이프 (터치) --------------------------------------------- */
-// 손가락으로 왼쪽으로 쓸면 다음, 오른쪽으로 쓸면 이전 단계로 간다. 마우스는 기존처럼 클릭으로만 넘긴다
-const SWIPE_MIN = 40 // 이만큼(px) 이상 가로로 쓸어야 넘어간다
-const dragX = ref(0)
-const dragging = ref(false)
+// 캐러셀처럼 넘긴다. 끄는 동안 지금 장면이 손가락을 그대로 따라가고 옆 단계 장면이 함께 밀려 들어온다.
+// 충분히 끌었거나 빠르게 튕기면 넘어가고, 아니면 제자리로 돌아온다. 마우스는 기존처럼 클릭으로만 넘긴다
+const PANE_GAP = 12        // 두 장면 사이 간격(px)
+const LAND_OFFSET = 0.5    // 넘어간 단계는 시작 0.5초 지점(자막이 거의 다 들어온 장면)부터 이어서 재생한다
+const COMMIT_RATIO = 0.25  // 화면 폭의 이만큼 끌면 넘어간다
+const FLICK_SPEED = 0.4    // px/ms, 이보다 빠르게 튕기면 짧게 끌어도 넘어간다
+const SETTLE_MS = 300      // 손을 뗀 뒤 자리 잡는 시간 (CSS .pane.settling과 같게)
+
+const peek = useTemplateRef('peek')
+const offset = ref(0)       // 지금 장면의 가로 위치(px)
+const peekDir = ref(0)      // 옆 장면 위치: 1 오른쪽(다음), -1 왼쪽(이전), 0 숨김
+const settling = ref(false)
 let swipe = null
 let suppressClick = false
 
+const stageStyle = computed(() => ({transform: `scale(${scale.value})`}))
+const paneW = () => stageBox.value.clientWidth + PANE_GAP
+const mainPaneStyle = computed(() => (offset.value ? {transform: `translate3d(${offset.value}px,0,0)`} : null))
+const peekPaneStyle = computed(() => (peekDir.value
+  ? {transform: `translate3d(${offset.value + peekDir.value * paneW()}px,0,0)`}
+  : {visibility: 'hidden'}))
+
+// dir 1은 다음, -1은 이전 단계. 더 갈 곳이 없으면 null
+function neighbor(dir) {
+  const i = currentStep()
+  if (dir > 0) {
+    if (ended.value) return null
+    return i < INTRO_STEPS.length - 1 ? {t: INTRO_STEPS[i + 1][0] + LAND_OFFSET} : {t: INTRO_RANGE[1], end: true}
+  }
+  return i > 0 ? {t: INTRO_STEPS[i - 1][0] + LAND_OFFSET} : null
+}
+
+function pause() {
+  playing = false
+  cancelAnimationFrame(rafId)
+}
+
 function onSwipeStart(e) {
-  if (e.pointerType === 'mouse' || !e.isPrimary) return
-  swipe = {id: e.pointerId, x: e.clientX, y: e.clientY}
+  if (e.pointerType === 'mouse' || !e.isPrimary || settling.value) return
+  swipe = {id: e.pointerId, x: e.clientX, y: e.clientY, axis: null, dir: 0, target: null, resume: false, samples: []}
 }
 
 function onSwipeMove(e) {
   if (!swipe || e.pointerId !== swipe.id) return
   const dx = e.clientX - swipe.x
-  if (!dragging.value && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - swipe.y)) dragging.value = true
-  if (dragging.value && !reduceMotion) dragX.value = dx * 0.35
+  if (!swipe.axis) {
+    const dy = e.clientY - swipe.y
+    if (Math.hypot(dx, dy) < 8) return
+    swipe.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+    // 가로로 끄는 동안은 재생을 멈춰 손가락 아래 장면이 바뀌지 않게 한다
+    if (swipe.axis === 'x') {
+      swipe.resume = playing
+      pause()
+    }
+  }
+  if (swipe.axis !== 'x') return
+  swipe.samples.push([e.timeStamp, e.clientX])
+  if (swipe.samples.length > 5) swipe.samples.shift()
+  if (reduceMotion) return
+
+  const dir = dx < 0 ? 1 : -1
+  if (dir !== swipe.dir) {
+    swipe.dir = dir
+    swipe.target = neighbor(dir)
+    if (swipe.target) peek.value.render(swipe.target.t)
+    peekDir.value = swipe.target ? dir : 0
+  }
+  // 더 갈 곳이 없는 쪽으로는 고무줄처럼 덜 따라온다
+  offset.value = swipe.target ? dx : dx * 0.25
 }
 
 function onSwipeEnd(e) {
   if (!swipe || e.pointerId !== swipe.id) return
-  const dx = e.clientX - swipe.x
-  const dy = e.clientY - swipe.y
-  const wasDragging = dragging.value
-  resetSwipe()
-  // 가로로 끌기 시작했다면 짧게 끝나도 손을 뗄 때 따라오는 탭으로 처리하지 않는다
-  if (wasDragging) {
-    suppressClick = true
-    setTimeout(() => (suppressClick = false), 400)
+  const s = swipe
+  swipe = null
+  if (s.axis !== 'x') return // 그냥 탭은 탭 버튼의 click이, 세로 쓸기는 아무것도 처리하지 않는다
+
+  // 끈 뒤 손을 뗄 때 따라오는 click으로 한 번 더 넘어가지 않게
+  suppressClick = true
+  setTimeout(() => (suppressClick = false), 400)
+
+  const dx = e.clientX - s.x
+  const [t0, x0] = s.samples[0] ?? [e.timeStamp, s.x]
+  const v = (e.clientX - x0) / Math.max(1, e.timeStamp - t0)
+  const dir = dx < 0 ? 1 : -1
+  const commit = Math.abs(dx) > stageBox.value.clientWidth * COMMIT_RATIO
+    || (Math.abs(v) > FLICK_SPEED && Math.sign(v) === Math.sign(dx))
+
+  if (reduceMotion) {
+    if (!commit) {
+      if (s.resume) play()
+    } else if (dir > 0) {
+      if (!ended.value) nextStep()
+    } else {
+      prevStep()
+    }
+    return
   }
-  if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy) * 1.2) return
-  if (dx < 0) {
-    if (!ended.value) nextStep()
-  } else {
-    prevStep()
-  }
+
+  const target = commit && s.dir === dir ? s.target : null
+  settle(target ? -dir * paneW() : 0, () => {
+    if (target) land(target)
+    else if (s.resume) play()
+  })
 }
 
-function resetSwipe() {
+function onSwipeCancel() {
+  const s = swipe
   swipe = null
-  dragging.value = false
-  dragX.value = 0
+  if (s?.axis === 'x') settle(0, () => s.resume && play())
+}
+
+// 손을 뗀 위치에서 목표 위치까지 미끄러지듯 이동한 뒤 done 실행
+function settle(to, done) {
+  settling.value = true
+  offset.value = to
+  setTimeout(() => {
+    settling.value = false
+    peekDir.value = 0
+    done()
+  }, SETTLE_MS + 20)
+}
+
+// 옆 장면이 화면을 다 덮은 순간, 지금 장면을 같은 시점으로 바꿔 제자리에 돌려놓는다 (눈에는 이어진 화면)
+function land(target) {
+  t = target.t
+  ended.value = !!target.end
+  draw()
+  offset.value = 0
+  if (!target.end) play()
 }
 
 function onStageClick(e) {
@@ -333,14 +425,15 @@ onBeforeUnmount(() => {
   -webkit-user-select: none;
 }
 
-.swipe-layer {
+.pane {
   position: absolute;
   inset: 0;
-  transition: transform .25s cubic-bezier(.2, .9, .3, 1);
+  overflow: hidden;
+  will-change: transform;
 }
 
-.swipe-layer.dragging {
-  transition: none;
+.pane.settling {
+  transition: transform .3s cubic-bezier(.22, .8, .24, 1);
 }
 
 .bars {
@@ -545,7 +638,7 @@ onBeforeUnmount(() => {
   }
 
   .tap-hint,
-  .swipe-layer {
+  .pane.settling {
     transition: none;
   }
 }
