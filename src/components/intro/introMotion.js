@@ -59,8 +59,10 @@ function track(t, kf) {
     return kf[kf.length - 1][1]
 }
 
+// 2D transform만 쓴다. translate3d는 요소마다 GPU 레이어를 따로 만들어, 모바일에서 레이어가 수십 개로 늘면
+// GPU 메모리가 모자라 화면 일부가 검게 비거나 깜빡인다
 const tf = (el, x = 0, y = 0, s = 1, r = 0) => {
-    el.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${s.toFixed(4)}) rotate(${r.toFixed(2)}deg)`
+    el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${s.toFixed(4)}) rotate(${r.toFixed(2)}deg)`
 }
 const op = (el, o) => {
     el.style.opacity = o.toFixed(3)
@@ -68,14 +70,14 @@ const op = (el, o) => {
 }
 // 줄 단위 마스크 리빌
 const reveal = (inner, p) => {
-    inner.style.transform = `translate3d(0,${((1 - p) * 112).toFixed(2)}%,0)`
+    inner.style.transform = `translateY(${((1 - p) * 112).toFixed(2)}%)`
 }
 // 형광펜 밑줄 스윕
 const sweep = (em, p) => {
     em.style.backgroundSize = `${(p * 100).toFixed(1)}% 100%`
 }
 const pressKey = (el, d, depth = 6) => {
-    el.style.transform = `translate3d(0,${(depth * 0.75 * d).toFixed(2)}px,0)`
+    el.style.transform = `translateY(${(depth * 0.75 * d).toFixed(2)}px)`
     el.style.boxShadow = `0 ${(depth * (1 - 0.75 * d)).toFixed(2)}px 0 #A9B5AF,0 ${(depth * 2.2 - depth * d).toFixed(1)}px ${depth * 3.6}px rgba(0,0,0,.4)`
 }
 
@@ -246,7 +248,7 @@ export function createIntroMotion(root) {
             s.img.style.visibility = st.img <= 0 ? 'hidden' : 'visible'
             s.img.style.clipPath = st.img >= 1 ? 'none' : `circle(${(st.img * 75).toFixed(2)}% at 50% 50%)`
         }
-        s.box.style.transform = `translate3d(calc(-50% + ${(st.bx - CX).toFixed(2)}px),calc(-50% + ${(st.by - SH / 2).toFixed(2)}px),0)`
+        s.box.style.transform = `translate(calc(-50% + ${(st.bx - CX).toFixed(2)}px),calc(-50% + ${(st.by - SH / 2).toFixed(2)}px))`
         s.box.style.opacity = st.o.toFixed(3)
     }
 
@@ -306,7 +308,7 @@ export function createIntroMotion(root) {
 
         // 탭 전환 (Lyrics → Settings)
         const tp = P(t, 8.04, 0.26, E.ioC)
-        tabLine.style.transform = `translate3d(${lerp(TAB.l0, TAB.l1, tp).toFixed(1)}px,0,0)`
+        tabLine.style.transform = `translateX(${lerp(TAB.l0, TAB.l1, tp).toFixed(1)}px)`
         tabLine.style.width = lerp(TAB.w0, TAB.w1, tp).toFixed(1) + 'px'
         tabLyr.classList.toggle('on', tp < 0.5)
         tabSet.classList.toggle('on', tp >= 0.5)
@@ -337,7 +339,7 @@ export function createIntroMotion(root) {
         // 설정 패널: 폰트 드롭다운 · 배경 이미지
         const listO = t >= 8.62 && t < 9.28 ? P(t, 8.62, 0.14) * (1 - P(t, 9.16, 0.12, E.inC)) : 0
         op(list, listO)
-        list.style.transform = `translate3d(0,${(-10 * (1 - listO)).toFixed(1)}px,0) scaleY(${lerp(0.96, 1, listO).toFixed(3)})`
+        list.style.transform = `translateY(${(-10 * (1 - listO)).toFixed(1)}px) scaleY(${lerp(0.96, 1, listO).toFixed(3)})`
         sel.classList.toggle('open', t >= 8.62 && t < 9.16)
         optNM.classList.toggle('hover', t >= 9.0 && t < 9.16)
         const fontName = serif ? 'Nanum Myeongjo' : 'Arial'
@@ -422,11 +424,14 @@ export function createIntroMotion(root) {
 
         // 카메라: 포커스 지점(fy)이 제자리에 머물도록 줌
         const cm = track(t, CAM_KF), sc = MOCK_SCALE * cm.z
-        cam.style.transform = `translate3d(${(STAGE_W / 2 - sc * MOCK_CX).toFixed(2)}px,${(MOCK_TOP + MOCK_SCALE * cm.fy * (1 - cm.z) + cm.ay).toFixed(2)}px,0) scale(${sc.toFixed(4)})`
+        cam.style.transform = `translate(${(STAGE_W / 2 - sc * MOCK_CX).toFixed(2)}px,${(MOCK_TOP + MOCK_SCALE * cm.fy * (1 - cm.z) + cm.ay).toFixed(2)}px) scale(${sc.toFixed(4)})`
         // 목업 등장: 아래에서 세워지며 올라온다
         const pe = P(t, 2.9, 0.85, E.outQ)
         op(camIn, P(t, 2.9, 0.25, E.lin))
-        camIn.style.transform = `translate3d(0,${(460 * (1 - pe)).toFixed(1)}px,0) rotateX(${(18 * (1 - pe)).toFixed(2)}deg) scale(${lerp(0.94, 1, pe).toFixed(4)})`
+        // 3D 회전은 올라오는 동안만 쓰고, 다 올라온 뒤에는 2D로 바꿔 레이어를 만들지 않는다
+        camIn.style.transform = pe < 1
+            ? `translateY(${(460 * (1 - pe)).toFixed(1)}px) rotateX(${(18 * (1 - pe)).toFixed(2)}deg) scale(${lerp(0.94, 1, pe).toFixed(4)})`
+            : 'none'
 
         renderMock(t)
     }

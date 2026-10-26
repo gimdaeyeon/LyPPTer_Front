@@ -25,10 +25,11 @@
            @pointerdown="onSwipeStart" @pointermove="onSwipeMove" @pointerup="onSwipeEnd"
            @pointercancel="onSwipeCancel" @click.capture="onStageClick">
         <!-- 캐러셀: 끄는 동안 지금 장면이 손가락을 따라가고, 옆 단계 장면(peek)이 함께 밀려 들어온다 -->
-        <div class="pane" :class="{settling}" :style="mainPaneStyle">
+        <div class="pane" :class="{settling, moving: peekDir || offset}" :style="mainPaneStyle">
           <IntroStage ref="stage" :style="stageStyle"/>
         </div>
-        <div class="pane" :class="{settling}" :style="peekPaneStyle">
+        <!-- 옆 장면은 끄는 동안에만 만든다 (평소에 띄워 두면 모바일 GPU 메모리를 두 배로 쓴다) -->
+        <div v-if="peekDir" class="pane moving" :class="{settling}" :style="peekPaneStyle">
           <IntroStage ref="peek" :style="stageStyle"/>
         </div>
         <!-- 스토리처럼 좌우를 눌러 섹션 이동 (왼쪽 1/3은 이전, 나머지는 다음). 터치 기기에서는 옆으로 쓸어도 된다 -->
@@ -56,7 +57,7 @@
 </template>
 
 <script setup>
-import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef} from 'vue'
 import IntroStage from '@/components/intro/IntroStage.vue'
 import {INTRO_RANGE, INTRO_STEPS, INTRO_STILLS, STAGE_W} from '@/components/intro/introMotion.js'
 import {track} from '@/utils/analytics.js'
@@ -191,9 +192,7 @@ let suppressClick = false
 const stageStyle = computed(() => ({transform: `scale(${scale.value})`}))
 const paneW = () => stageBox.value.clientWidth + PANE_GAP
 const mainPaneStyle = computed(() => (offset.value ? {transform: `translate3d(${offset.value}px,0,0)`} : null))
-const peekPaneStyle = computed(() => (peekDir.value
-  ? {transform: `translate3d(${offset.value + peekDir.value * paneW()}px,0,0)`}
-  : {visibility: 'hidden'}))
+const peekPaneStyle = computed(() => ({transform: `translate3d(${offset.value + peekDir.value * paneW()}px,0,0)`}))
 
 // dir 1은 다음, -1은 이전 단계. 더 갈 곳이 없으면 null
 function neighbor(dir) {
@@ -237,8 +236,10 @@ function onSwipeMove(e) {
   if (dir !== swipe.dir) {
     swipe.dir = dir
     swipe.target = neighbor(dir)
-    if (swipe.target) peek.value.render(swipe.target.t)
     peekDir.value = swipe.target ? dir : 0
+    // 옆 장면이 그려지기 전(같은 프레임 안)에 목표 시점으로 맞춘다
+    const target = swipe.target
+    if (target) nextTick(() => peek.value?.render(target.t))
   }
   // 더 갈 곳이 없는 쪽으로는 고무줄처럼 덜 따라온다
   offset.value = swipe.target ? dx : dx * 0.25
@@ -411,8 +412,6 @@ onBeforeUnmount(() => {
   color: #fff;
   box-shadow: 0 40px 120px rgba(0, 0, 0, .45);
   animation: dialog-in .28s cubic-bezier(.2, .9, .3, 1.15);
-  /* 팝업을 별도 합성 레이어로 분리해, 안에서 매 프레임 바뀌는 장면이 바깥 블러 배경을 다시 그리게 하지 않는다 */
-  transform: translateZ(0);
   isolation: isolate;
 }
 
@@ -442,6 +441,10 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   overflow: hidden;
+}
+
+/* 움직이는 동안에만 GPU 레이어로 올린다 */
+.pane.moving {
   will-change: transform;
 }
 
