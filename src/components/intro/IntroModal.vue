@@ -86,7 +86,8 @@ function draw() {
   stage.value?.render(t)
   INTRO_STEPS.forEach(([s0, s1], i) => {
     const p = Math.min(1, Math.max(0, (t - s0) / (s1 - s0)))
-    if (barFills[i]) barFills[i].style.width = p * 100 + '%'
+    // width 대신 transform으로 늘려 매 프레임 다시 그리지 않게 한다 (모바일에서 진행바·바깥 배경 깜빡임 방지)
+    if (barFills[i]) barFills[i].style.transform = `scaleX(${p.toFixed(4)})`
   })
 }
 
@@ -390,6 +391,15 @@ onBeforeUnmount(() => {
   animation: backdrop-in .2s ease-out;
 }
 
+/* 터치 기기(특히 iOS Safari)는 움직이는 화면 위의 backdrop-filter가 깜빡이는 경우가 있어 블러 대신 진한 배경만 쓴다 */
+@media (hover: none) {
+  .backdrop {
+    background: rgba(10, 14, 12, .7);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 .dialog {
   position: relative;
   /* 화면 높이에 맞춰 4:5 스테이지 + 하단 바(72px)가 들어가도록 */
@@ -401,6 +411,9 @@ onBeforeUnmount(() => {
   color: #fff;
   box-shadow: 0 40px 120px rgba(0, 0, 0, .45);
   animation: dialog-in .28s cubic-bezier(.2, .9, .3, 1.15);
+  /* 팝업을 별도 합성 레이어로 분리해, 안에서 매 프레임 바뀌는 장면이 바깥 블러 배경을 다시 그리게 하지 않는다 */
+  transform: translateZ(0);
+  isolation: isolate;
 }
 
 .dialog:focus {
@@ -462,10 +475,11 @@ onBeforeUnmount(() => {
 
 .bars b {
   display: block;
-  width: 0;
   height: 100%;
-  border-radius: 2px;
   background: #fff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
 }
 
 .tap {
